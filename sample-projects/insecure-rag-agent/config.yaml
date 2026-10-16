@@ -1,5 +1,0 @@
-# Application configuration
-app_name: Insecure GenAI Demo
-environment: production
-debug: true # Insecure setting: debug enabled in production
-allow_cors_all: true
