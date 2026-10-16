@@ -27,7 +27,7 @@ from app.utils.file_security import (
     temporary_workspace,
     FileSecurityError
 )
-from app.agents.orchestrator import orchestrator
+from app.agents.multi_agent_orchestrator import multi_agent_orchestrator
 from app.utils.pdf_generator import generate_pdf_report
 
 router = APIRouter(prefix="/assessments", tags=["Assessments"])
@@ -53,6 +53,9 @@ def _persist_assessment_results(
     assessment.severity_breakdown = risk["severity_breakdown"]
     assessment.compliance_breakdown = comp["compliance_breakdown"]
     assessment.recon_summary = recon
+    # Persist multi-agent workflow tracking data
+    assessment.agent_execution_log = pipeline_results.get("agent_execution_log", [])
+    assessment.supervisor_iterations = pipeline_results.get("supervisor_iterations", 0)
 
     # Save findings and evidence
     for rf in raw_findings:
@@ -120,7 +123,7 @@ async def create_assessment(
     db.refresh(assessment)
 
     try:
-        results = await orchestrator.run_pipeline(
+        results = await multi_agent_orchestrator.run_pipeline(
             project_name=request.project_name,
             architecture_text=request.architecture_text,
             workspace_dir=None,
@@ -209,7 +212,7 @@ async def upload_and_assess(
             assessment.status = "ANALYZING"
             db.commit()
 
-            results = await orchestrator.run_pipeline(
+            results = await multi_agent_orchestrator.run_pipeline(
                 project_name=project_name,
                 architecture_text=architecture_text,
                 workspace_dir=extracted_dir,
