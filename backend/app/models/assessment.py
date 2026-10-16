@@ -31,6 +31,10 @@ class Assessment(Base):
     findings_count = Column(Integer, default=0)
     severity_breakdown = Column(JSON, default=dict)
     compliance_breakdown = Column(JSON, default=dict)
+
+    # Multi-agent workflow tracking (Gemma 4 supervisor decisions)
+    agent_execution_log = Column(JSON, default=list)   # list of AgentExecutionRecord dicts
+    supervisor_iterations = Column(Integer, default=0)  # total Gemma 4 routing calls
     
     # Timestamps
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
