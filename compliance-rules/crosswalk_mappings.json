@@ -1,0 +1,224 @@
+{
+  "crosswalk_version": "1.0.0",
+  "name": "GenAI Security & Compliance Crosswalk Matrix",
+  "description": "Evidence-grounded crosswalk mapping OWASP GenAI risks to NIST AI RMF, MITRE ATLAS, ISO/IEC 42001, ISO/IEC 23894, and the EU AI Act.",
+  "disclaimer": "Independent academic implementation inspired by the mapping concept of the OWASP GenAI Security Project Crosswalk. Conceptual mappings are explicitly indicated.",
+  "mappings": [
+    {
+      "source_category": "PROMPT_INJECTION",
+      "owasp_id": "LLM01",
+      "target_controls": [
+        {
+          "framework_id": "MITRE-ATLAS",
+          "control_id": "AML.T0051",
+          "mapping_type": "EXACT",
+          "rationale": "Directly corresponds to prompt injection technique where untrusted input manipulates model execution context."
+        },
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "MEASURE-2.5",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires evaluating adversarial robustness against prompt injection and evasion techniques."
+        },
+        {
+          "framework_id": "ISO-23894",
+          "control_id": "ISO23894-7.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires risk treatment via guardrails to handle untrusted input channels into AI models."
+        },
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-15",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Mandates cybersecurity resilience against unauthorized third parties altering AI behavior via prompt injection."
+        }
+      ]
+    },
+    {
+      "source_category": "SENSITIVE_DATA_EXPOSURE",
+      "owasp_id": "LLM02",
+      "target_controls": [
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "MEASURE-2.7",
+          "mapping_type": "EXACT",
+          "rationale": "Directly focuses on privacy and sensitive data protection in prompts, context, and outputs."
+        },
+        {
+          "framework_id": "MITRE-ATLAS",
+          "control_id": "AML.T0025",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Covers unauthorized exfiltration of proprietary or personal data via ML inference queries."
+        },
+        {
+          "framework_id": "ISO-42001",
+          "control_id": "A.9.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Addresses protection and provenance of sensitive organizational data ingested into AI systems."
+        },
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-10",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Mandates strict data governance and confidentiality safeguards across data used by AI applications."
+        }
+      ]
+    },
+    {
+      "source_category": "SUPPLY_CHAIN_VULNERABILITY",
+      "owasp_id": "LLM03",
+      "target_controls": [
+        {
+          "framework_id": "MITRE-ATLAS",
+          "control_id": "AML.T0040",
+          "mapping_type": "EXACT",
+          "rationale": "Addresses ML supply chain compromise through backdoored models, public hubs, or tampered packages."
+        },
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "MAP-1.5",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires mapping and managing dependencies on third-party foundation models and components."
+        },
+        {
+          "framework_id": "ISO-42001",
+          "control_id": "A.10.3",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Mandates supplier relationship management and risk assessment for third-party AI services."
+        },
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-15",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires cybersecurity assurance across AI supply chain dependencies."
+        }
+      ]
+    },
+    {
+      "source_category": "DATA_POISONING",
+      "owasp_id": "LLM04",
+      "target_controls": [
+        {
+          "framework_id": "MITRE-ATLAS",
+          "control_id": "AML.T0043",
+          "mapping_type": "EXACT",
+          "rationale": "Directly maps to adversarial data poisoning of retrieval corpora, databases, or training data."
+        },
+        {
+          "framework_id": "ISO-42001",
+          "control_id": "A.9.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Addresses data provenance and validation for AI systems to maintain data integrity."
+        },
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-10",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires high data quality and prevention of tainted or manipulated data in high-risk AI pipelines."
+        }
+      ]
+    },
+    {
+      "source_category": "INSECURE_OUTPUT_HANDLING",
+      "owasp_id": "LLM05",
+      "target_controls": [
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "MANAGE-1.3",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Specifies verification of AI outputs and fail-safe fallback procedures before executing system actions."
+        },
+        {
+          "framework_id": "ISO-23894",
+          "control_id": "ISO23894-7.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Mandates technical guardrails to treat untrusted model outputs before passing to downstream sinks."
+        },
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-15",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires systems to be resilient against secondary injection attacks originating from unsafe model responses."
+        }
+      ]
+    },
+    {
+      "source_category": "EXCESSIVE_AGENCY",
+      "owasp_id": "LLM06",
+      "target_controls": [
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-14",
+          "mapping_type": "EXACT",
+          "rationale": "Directly mandates human oversight and intervention mechanisms for AI actions with significant impact."
+        },
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "GOVERN-1.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Addresses organizational responsibilities, authorization gates, and operational limits on autonomous agents."
+        },
+        {
+          "framework_id": "ISO-23894",
+          "control_id": "ISO23894-6.3",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Requires identifying risks arising from autonomous tool execution and unconstrained agent permissions."
+        }
+      ]
+    },
+    {
+      "source_category": "SYSTEM_PROMPT_LEAKAGE",
+      "owasp_id": "LLM07",
+      "target_controls": [
+        {
+          "framework_id": "MITRE-ATLAS",
+          "control_id": "AML.T0025",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Corresponds to ML inference extraction of system internals and intellectual property."
+        },
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "MEASURE-2.7",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Focuses on confidential information disclosure within model system contexts."
+        }
+      ]
+    },
+    {
+      "source_category": "VECTOR_EMBEDDING_WEAKNESS",
+      "owasp_id": "LLM08",
+      "target_controls": [
+        {
+          "framework_id": "ISO-42001",
+          "control_id": "A.9.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Addresses retrieval store integrity, multitenancy partition controls, and vector access controls."
+        },
+        {
+          "framework_id": "EU-AI-ACT",
+          "control_id": "EU-AI-ART-10",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Mandates data governance and access boundaries over vector retrieval corpora."
+        }
+      ]
+    },
+    {
+      "source_category": "UNBOUNDED_CONSUMPTION",
+      "owasp_id": "LLM10",
+      "target_controls": [
+        {
+          "framework_id": "NIST-AI-RMF",
+          "control_id": "MANAGE-1.3",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Addresses operational availability, token rate-limiting, and recursion circuit breakers."
+        },
+        {
+          "framework_id": "ISO-23894",
+          "control_id": "ISO23894-7.2",
+          "mapping_type": "CONCEPTUAL",
+          "rationale": "Specifies technical guardrails to prevent denial of service and resource starvation."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "frameworks": [
+    {
+      "id": "OWASP-GENAI",
+      "name": "OWASP Top 10 for Large Language Model Applications",
+      "version": "2025 (v1.1-aligned)",
+      "publisher": "OWASP GenAI Security Project (Independent Academic Reference)",
+      "file": "owasp_genai_top10.json",
+      "category": "Application Security",
+      "controls_count": 10,
+      "source_url": "https://genai.owasp.org/llm-top-10/",
+      "disclaimer": "Academic reference inspired by OWASP GenAI Security Project. No official endorsement."
+    },
+    {
+      "id": "NIST-AI-RMF",
+      "name": "NIST AI Risk Management Framework (AI RMF 1.0)",
+      "version": "1.0",
+      "publisher": "National Institute of Standards and Technology",
+      "file": "nist_ai_rmf.json",
+      "category": "Risk Management",
+      "controls_count": 8,
+      "source_url": "https://doi.org/10.6028/NIST.AI.100-1",
+      "disclaimer": "Crosswalk reference aligned with NIST AI 100-1 playbooks."
+    },
+    {
+      "id": "MITRE-ATLAS",
+      "name": "MITRE Adversarial Threat Landscape for AI Systems (ATLAS)",
+      "version": "v4.5.0",
+      "publisher": "MITRE Corporation",
+      "file": "mitre_atlas.json",
+      "category": "Threat Matrix",
+      "controls_count": 5,
+      "source_url": "https://atlas.mitre.org/",
+      "disclaimer": "Threat technique mapping aligned with MITRE ATLAS v4.5."
+    },
+    {
+      "id": "ISO-42001",
+      "name": "ISO/IEC 42001:2023 Artificial Intelligence Management System",
+      "version": "2023",
+      "publisher": "International Organization for Standardization",
+      "file": "iso_42001.json",
+      "category": "Management System",
+      "controls_count": 4,
+      "source_url": "https://www.iso.org/standard/81230.html",
+      "disclaimer": "Informational control mapping crosswalk; not an ISO certification."
+    },
+    {
+      "id": "ISO-23894",
+      "name": "ISO/IEC 23894:2023 AI Risk Management Guidance",
+      "version": "2023",
+      "publisher": "International Organization for Standardization",
+      "file": "iso_23894.json",
+      "category": "Risk Guidance",
+      "controls_count": 3,
+      "source_url": "https://www.iso.org/standard/77304.html",
+      "disclaimer": "Technical guidance mapping crosswalk."
+    },
+    {
+      "id": "EU-AI-ACT",
+      "name": "European Union Artificial Intelligence Act (Regulation (EU) 2024/1689)",
+      "version": "2024",
+      "publisher": "European Parliament and Council",
+      "file": "eu_ai_act.json",
+      "category": "Regulatory Obligations",
+      "controls_count": 6,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "disclaimer": "Technical compliance assessment aid; does not constitute legal counsel."
+    }
+  ]
+}

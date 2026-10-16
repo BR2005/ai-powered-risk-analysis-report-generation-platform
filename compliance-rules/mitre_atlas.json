@@ -1,0 +1,56 @@
+{
+  "framework_id": "MITRE-ATLAS",
+  "name": "MITRE Adversarial Threat Landscape for Artificial-Intelligence Systems (ATLAS)",
+  "version": "v4.5.0",
+  "publisher": "MITRE Corporation",
+  "publication_date": "2024-03-01",
+  "source_url": "https://atlas.mitre.org/",
+  "disclaimer": "Academic reference and mapping crosswalk inspired by MITRE ATLAS matrices and techniques. Not officially endorsed or certified by MITRE.",
+  "controls": [
+    {
+      "control_id": "AML.T0051",
+      "title": "LLM Prompt Injection (Direct & Indirect)",
+      "category": "Initial Access / Execution",
+      "description": "Adversaries craft inputs or insert malicious instructions into external content ingested by an LLM application to override instructions and hijack execution.",
+      "reference_url": "https://atlas.mitre.org/techniques/AML.T0051/",
+      "verification_guidance": "Check for prompt structure sanitization, context boundary isolation, and secondary confirmation on high-risk tools.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "AML.T0054",
+      "title": "LLM Jailbreak",
+      "category": "Defense Evasion",
+      "description": "Adversaries use roleplay, hypothetical framing, cipher encoding, or adversarial suffix tokens to bypass AI safety guardrails and system restrictions.",
+      "reference_url": "https://atlas.mitre.org/techniques/AML.T0054/",
+      "verification_guidance": "Verify multi-layer defensive guardrails (input classifier + output classifier) and adversarial test coverage.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "AML.T0043",
+      "title": "Data Poisoning",
+      "category": "Persistence / Impact",
+      "description": "Adversaries manipulate RAG knowledge sources or training datasets to introduce malicious associations or backdoors.",
+      "reference_url": "https://atlas.mitre.org/techniques/AML.T0043/",
+      "verification_guidance": "Verify cryptographic hashing of ingested knowledge chunks, origin verification, and anomaly detection in vector search spaces.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "AML.T0025",
+      "title": "Exfiltration via ML Inference",
+      "category": "Exfiltration",
+      "description": "Adversaries extract sensitive model weights, training data, or proprietary system prompt instructions by querying the model repeatedly.",
+      "reference_url": "https://atlas.mitre.org/techniques/AML.T0025/",
+      "verification_guidance": "Audit rate-limiting on inference endpoints, differential privacy safeguards, and prompt leak filters.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "AML.T0040",
+      "title": "ML Supply Chain Compromise",
+      "category": "Initial Access",
+      "description": "Adversaries compromise upstream third-party models, packages (PyPI, npm), or checkpoints loaded from public hubs.",
+      "reference_url": "https://atlas.mitre.org/techniques/AML.T0040/",
+      "verification_guidance": "Inspect package lockfiles, model weight signatures, vulnerability scanning on AI libraries, and safe unpicklers.",
+      "is_conceptual_mapping": false
+    }
+  ]
+}

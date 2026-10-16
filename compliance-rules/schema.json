@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GenAI Compliance and Security Control Mapping Schema",
+  "description": "Schema for defining GenAI security frameworks, controls, and crosswalk mappings for independent academic risk assessment.",
+  "type": "object",
+  "required": ["framework_id", "name", "version", "publisher", "disclaimer", "controls"],
+  "properties": {
+    "framework_id": {
+      "type": "string",
+      "enum": ["OWASP-GENAI", "NIST-AI-RMF", "MITRE-ATLAS", "ISO-42001", "ISO-23894", "EU-AI-ACT"]
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "publication_date": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["control_id", "title", "description", "category"],
+        "properties": {
+          "control_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "reference_url": {
+            "type": "string"
+          },
+          "verification_guidance": {
+            "type": "string"
+          },
+          "is_conceptual_mapping": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    }
+  }
+}
