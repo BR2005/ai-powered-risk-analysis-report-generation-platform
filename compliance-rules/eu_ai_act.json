@@ -1,0 +1,65 @@
+{
+  "framework_id": "EU-AI-ACT",
+  "name": "European Union Artificial Intelligence Act (Regulation (EU) 2024/1689)",
+  "version": "2024 (Official Journal L series)",
+  "publisher": "European Parliament and Council of the European Union",
+  "publication_date": "2024-07-12",
+  "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+  "disclaimer": "Academic reference and mapping crosswalk for EU AI Act provisions. The platform is an assessment aid and does not constitute formal legal counsel or regulatory certification.",
+  "controls": [
+    {
+      "control_id": "EU-AI-ART-9",
+      "title": "Risk Management System (Article 9)",
+      "category": "High-Risk AI Obligations",
+      "description": "Establish, implement, document, and maintain a continuous risk management system throughout the entire lifecycle of high-risk AI systems.",
+      "reference_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_9",
+      "verification_guidance": "Verify systematic identification and evaluation of risks to health, safety, and fundamental rights, and documented mitigations.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "EU-AI-ART-10",
+      "title": "Data and Data Governance (Article 10)",
+      "category": "High-Risk AI Obligations",
+      "description": "Training, validation, and testing datasets shall be subject to appropriate data governance and management practices, preventing biases and unauthorized exposure.",
+      "reference_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_10",
+      "verification_guidance": "Examine provenance tracking for training/RAG documents, bias checks, and privacy protection protocols.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "EU-AI-ART-13",
+      "title": "Transparency and Provision of Information to Deployers (Article 13)",
+      "category": "Transparency",
+      "description": "AI systems must be designed to ensure sufficient transparency to enable deployers to interpret outputs and use the system appropriately.",
+      "reference_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_13",
+      "verification_guidance": "Verify documentation of system capabilities, limitations, model versions, citation sources, and confidence metrics.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "EU-AI-ART-14",
+      "title": "Human Oversight (Article 14)",
+      "category": "Human Oversight",
+      "description": "High-risk AI systems must be designed and developed so that they can be effectively overseen by natural persons during the period they are in use.",
+      "reference_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_14",
+      "verification_guidance": "Check for human-in-the-loop approval gates for autonomous agent actions, stop buttons, and override controls.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "EU-AI-ART-15",
+      "title": "Accuracy, Robustness and Cybersecurity (Article 15)",
+      "category": "Cybersecurity & Robustness",
+      "description": "AI systems must achieve an appropriate level of accuracy, robustness, and cybersecurity, remaining resilient against third-party exploitation, prompt injection, and data poisoning.",
+      "reference_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_15",
+      "verification_guidance": "Verify defensive guardrails against prompt injection, output sanitization, secret protection, and dependency vulnerability management.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "EU-AI-ART-50",
+      "title": "Transparency Obligations for Certain AI Systems (Article 50)",
+      "category": "Transparency",
+      "description": "Providers must ensure that AI systems intended to interact directly with natural persons inform users that they are interacting with an AI system.",
+      "reference_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50",
+      "verification_guidance": "Check user interface and system responses for AI interaction disclaimers and synthetic content watermarking.",
+      "is_conceptual_mapping": false
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "framework_id": "NIST-AI-RMF",
+  "name": "NIST Artificial Intelligence Risk Management Framework (AI RMF 1.0)",
+  "version": "1.0 (NIST Trustworthy AI)",
+  "publisher": "National Institute of Standards and Technology (NIST)",
+  "publication_date": "2023-01-26",
+  "source_url": "https://doi.org/10.6028/NIST.AI.100-1",
+  "disclaimer": "Academic reference and mapping crosswalk inspired by NIST AI 100-1 and NIST AI 600-1 (Generative AI Profile). Not officially endorsed or certified by NIST.",
+  "controls": [
+    {
+      "control_id": "GOVERN-1.1",
+      "title": "Legal and Regulatory Compliance Requirements",
+      "category": "Govern",
+      "description": "Legal and regulatory requirements involving AI are understood, managed, and documented by the organization.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Govern",
+      "verification_guidance": "Verify documentation of AI regulatory baseline (e.g., EU AI Act, copyright, privacy laws) and organizational compliance tracking.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "GOVERN-1.2",
+      "title": "AI Risk Management Roles and Responsibilities",
+      "category": "Govern",
+      "description": "Roles and responsibilities for AI system design, development, deployment, evaluation, and monitoring are established and maintained.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Govern",
+      "verification_guidance": "Examine documented security owner roles, approvals for AI tools, and human review sign-offs.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "MAP-1.1",
+      "title": "Intended Purpose and Deployment Context",
+      "category": "Map",
+      "description": "Intended purposes, potential positive and negative impacts, context of use, and target user demographics are documented.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Map",
+      "verification_guidance": "Verify system documentation details target audience, risk profile, and limitations on autonomous action.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "MAP-1.5",
+      "title": "Third-Party AI and Component Dependencies",
+      "category": "Map",
+      "description": "Risks associated with third-party components, pre-trained foundation models, cloud APIs, and training datasets are identified and managed.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Map",
+      "verification_guidance": "Check AI Bill of Materials (AIBOM), third-party model SLAs, API token management, and data flow boundary definitions.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "MEASURE-2.5",
+      "title": "Adversarial Robustness and Security Testing",
+      "category": "Measure",
+      "description": "The AI system is evaluated for adversarial robustness, including prompt injection, data extraction, and evasive inputs.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Measure",
+      "verification_guidance": "Verify presence of automated red-teaming tests, fuzzing, static security analysis, and guardrail validation tests.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "MEASURE-2.7",
+      "title": "Privacy and Sensitive Data Protection",
+      "category": "Measure",
+      "description": "Data privacy risks and unauthorized sensitive data exposure (PII, credentials) in prompts, outputs, or fine-tuning data are measured.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Measure",
+      "verification_guidance": "Look for automated DLP checks, token masking, and privacy-preserving data retrieval in RAG pipelines.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "MANAGE-1.3",
+      "title": "System Output Verification and Fallback Mechanisms",
+      "category": "Manage",
+      "description": "Mechanisms to detect unexpected or untrustworthy outputs are in place, with fallback procedures to mitigate harmful consequences.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Manage",
+      "verification_guidance": "Verify output validation, schema enforcement, rate-limits, and circuit breakers when confidence scores fall below threshold.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "MANAGE-2.4",
+      "title": "Incident Response and Logging for AI Incidents",
+      "category": "Manage",
+      "description": "Procedures for reporting, containing, and remediating AI security and safety incidents are defined and operationalized.",
+      "reference_url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook/Manage",
+      "verification_guidance": "Examine audit logging for prompts/responses (with secret redaction), anomaly alerts, and incident response runbooks.",
+      "is_conceptual_mapping": false
+    }
+  ]
+}

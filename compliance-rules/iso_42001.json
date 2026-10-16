@@ -1,0 +1,47 @@
+{
+  "framework_id": "ISO-42001",
+  "name": "ISO/IEC 42001:2023 Artificial Intelligence Management System (AIMS)",
+  "version": "2023",
+  "publisher": "International Organization for Standardization (ISO)",
+  "publication_date": "2023-12-18",
+  "source_url": "https://www.iso.org/standard/81230.html",
+  "disclaimer": "Academic reference and mapping crosswalk for ISO/IEC 42001. The platform is an assessment aid and does not provide formal ISO certification or audit attestation.",
+  "controls": [
+    {
+      "control_id": "A.6.1.2",
+      "title": "AI Risk Assessment Process",
+      "category": "Risk Management",
+      "description": "Establish, implement, and maintain a documented AI risk assessment process tailored to AI vulnerabilities and threats.",
+      "reference_url": "https://www.iso.org/standard/81230.html",
+      "verification_guidance": "Check for formal risk scoring, vulnerability scanning logs, and evidence of periodic risk reviews.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "A.8.2",
+      "title": "AI System Life Cycle Development and Testing",
+      "category": "Life Cycle",
+      "description": "Security, privacy, and robustness controls are embedded into AI application design, testing, verification, and deployment phases.",
+      "reference_url": "https://www.iso.org/standard/81230.html",
+      "verification_guidance": "Verify automated CI/CD security scanning, pre-deployment regression tests, and output sanitization test cases.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "A.9.2",
+      "title": "Data for AI Systems & Provenance",
+      "category": "Data Governance",
+      "description": "Ensure data used in training, fine-tuning, or retrieval-augmented generation (RAG) is traceable, authorized, and vetted for quality.",
+      "reference_url": "https://www.iso.org/standard/81230.html",
+      "verification_guidance": "Audit document ingestion logs, data sensitivity classification, and authorization barriers on vector collections.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "A.10.3",
+      "title": "Third-Party AI Relationship Management",
+      "category": "Supplier Relationships",
+      "description": "Assess and continuously monitor risks arising from third-party foundation models, API providers, and external plugins.",
+      "reference_url": "https://www.iso.org/standard/81230.html",
+      "verification_guidance": "Verify API key rotation policies, vendor data retention agreements, and fallback redundancy.",
+      "is_conceptual_mapping": false
+    }
+  ]
+}
