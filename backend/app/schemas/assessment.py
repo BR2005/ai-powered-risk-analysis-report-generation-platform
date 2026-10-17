@@ -101,6 +101,9 @@ class AssessmentSummaryResponse(BaseModel):
     findings_count: int
     severity_breakdown: dict[str, int] = {}
     compliance_breakdown: dict[str, int] = {}
+    # Multi-agent workflow fields
+    agent_execution_log: list[dict[str, Any]] = []
+    supervisor_iterations: int = 0
     created_at: datetime
     completed_at: datetime | None = None
 
