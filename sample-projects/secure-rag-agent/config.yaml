@@ -1,0 +1,5 @@
+# Hardened application configuration
+app_name: Secure GenAI Demo
+environment: production
+debug: false # Secure setting: debug disabled
+allow_cors_all: false

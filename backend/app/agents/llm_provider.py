@@ -36,7 +36,8 @@ class LLMProvider:
                             "maxOutputTokens": 2048,
                         }
                     }
-                    async with httpx.AsyncClient(timeout=30.0) as client:
+                    timeout = httpx.Timeout(20.0, connect=2.5)
+                    async with httpx.AsyncClient(timeout=timeout) as client:
                         resp = await client.post(url, json=payload)
                         if resp.status_code == 200:
                             data = resp.json()
@@ -73,7 +74,8 @@ class LLMProvider:
                     ],
                     "temperature": 0.2
                 }
-                async with httpx.AsyncClient(timeout=30.0) as client:
+                timeout = httpx.Timeout(20.0, connect=2.5)
+                async with httpx.AsyncClient(timeout=timeout) as client:
                     resp = await client.post(url, headers=headers, json=payload)
                     if resp.status_code == 200:
                         data = resp.json()
@@ -92,7 +94,8 @@ class LLMProvider:
                 "prompt": f"{system_prompt}\n\nTask: {user_prompt}",
                 "stream": False,
             }
-            async with httpx.AsyncClient(timeout=30.0) as client:
+            timeout = httpx.Timeout(20.0, connect=1.5)
+            async with httpx.AsyncClient(timeout=timeout) as client:
                 resp = await client.post(url, json=payload)
                 if resp.status_code == 200:
                     return resp.json().get("response", "").strip()

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 WORKSPACE_ROOT = BASE_DIR.parent
-COMPLIANCE_RULES_DIR = WORKSPACE_ROOT / "compliance-rules"
+COMPLIANCE_RULES_DIR = Path(os.getenv("COMPLIANCE_RULES_DIR", "/compliance-rules" if Path("/compliance-rules").exists() else WORKSPACE_ROOT / "compliance-rules"))
 UPLOAD_DIR = BASE_DIR / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -10,7 +10,8 @@ import {
   CheckCircle2, 
   FileText, 
   ExternalLink,
-  Code
+  Code,
+  Bot
 } from 'lucide-react';
 import { getAssessment, getReportPdfUrl } from '../api/client';
 import type { AssessmentDetail, Finding } from '../types';
@@ -19,12 +20,13 @@ import { ControlStatusBadge } from '../components/ControlStatusBadge';
 import { RiskScoreGauge } from '../components/RiskScoreGauge';
 import { PipelineTimeline } from '../components/PipelineTimeline';
 import { EvidenceViewerModal } from '../components/EvidenceViewerModal';
+import { AgentExecutionTrace } from '../components/AgentExecutionTrace';
 
 export const AssessmentDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [assessment, setAssessment] = useState<AssessmentDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'findings' | 'compliance' | 'remediation' | 'architecture'>('findings');
+  const [activeTab, setActiveTab] = useState<'findings' | 'trace' | 'compliance' | 'remediation' | 'architecture'>('findings');
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
 
   useEffect(() => {
@@ -110,7 +112,11 @@ export const AssessmentDetails: React.FC = () => {
 
       {/* Pipeline Status Banner */}
       <div className="glass-panel rounded-2xl p-4 border border-slate-800">
-        <PipelineTimeline currentStatus={assessment.status} />
+        <PipelineTimeline 
+          currentStatus={assessment.status} 
+          agentExecutionLog={assessment.agent_execution_log}
+          supervisorIterations={assessment.supervisor_iterations}
+        />
       </div>
 
       {/* Executive Summary Cards */}
@@ -219,10 +225,22 @@ export const AssessmentDetails: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b border-slate-800 flex items-center gap-6">
+      <div className="border-b border-slate-800 flex items-center gap-6 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('trace')}
+          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer shrink-0 ${
+            activeTab === 'trace'
+              ? 'border-cyan-400 text-cyan-300'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Bot className="w-4 h-4 text-cyan-400" />
+          <span>Gemma 4 Trace ({assessment.agent_execution_log?.length || 0})</span>
+        </button>
+
         <button
           onClick={() => setActiveTab('findings')}
-          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
+          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer shrink-0 ${
             activeTab === 'findings'
               ? 'border-cyan-400 text-cyan-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -234,7 +252,7 @@ export const AssessmentDetails: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('compliance')}
-          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
+          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer shrink-0 ${
             activeTab === 'compliance'
               ? 'border-cyan-400 text-cyan-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -246,7 +264,7 @@ export const AssessmentDetails: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('remediation')}
-          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
+          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer shrink-0 ${
             activeTab === 'remediation'
               ? 'border-cyan-400 text-cyan-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -258,7 +276,7 @@ export const AssessmentDetails: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('architecture')}
-          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
+          className={`pb-3 text-sm font-semibold transition-all flex items-center gap-2 border-b-2 cursor-pointer shrink-0 ${
             activeTab === 'architecture'
               ? 'border-cyan-400 text-cyan-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -268,6 +286,14 @@ export const AssessmentDetails: React.FC = () => {
           <span>Recon & Boundaries</span>
         </button>
       </div>
+
+      {/* Tab: Multi-Agent Trace */}
+      {activeTab === 'trace' && (
+        <AgentExecutionTrace 
+          executionLog={assessment.agent_execution_log} 
+          supervisorIterations={assessment.supervisor_iterations} 
+        />
+      )}
 
       {/* Tab 1: Findings List */}
       {activeTab === 'findings' && (

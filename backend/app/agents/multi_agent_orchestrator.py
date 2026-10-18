@@ -40,10 +40,17 @@ from app.agents.state import SharedAssessmentState
 logger = logging.getLogger(__name__)
 
 # ─── Tool execution allowlist (maps agent name → callable) ────────────────────
-# Only agents listed here may ever be dispatched.  Any model output routing to
-# a name not in this map is silently dropped and the supervisor is called again.
-
-_AGENT_REGISTRY: dict[str, Any] = {}  # populated after class definitions
+# Only agents listed here may ever be dispatched. Any model output routing to
+# a name not in this map is safely rejected, preventing arbitrary code execution.
+ALLOWED_AGENT_TOOLS: set[str] = {
+    "recon",
+    "security",
+    "evidence",
+    "risk",
+    "compliance",
+    "remediation",
+    "report",
+}
 
 
 class MultiAgentOrchestrator:
@@ -109,14 +116,17 @@ class MultiAgentOrchestrator:
                 )
                 break
 
+            # ── Safety Allowlist Enforcement ─────────────────────────────────
+            if next_agent not in ALLOWED_AGENT_TOOLS:
+                logger.error("Supervisor attempted to dispatch unapproved agent '%s'. Dropping.", next_agent)
+                continue
+
             # ── Dispatch to the selected agent ────────────────────────────────
             started_at = datetime.now(timezone.utc)
             output_summary = await self._dispatch(next_agent, state)
 
-            # Track extra security loops for the supervisor
-            if next_agent in ("security", "evidence") and next_agent in (
-                set(state.completed_agents) - {next_agent}
-            ):
+            # Track extra security loops for bounded feedback loop
+            if next_agent in ("security", "evidence") and next_agent in state.completed_agents:
                 state.extra_security_loops += 1
 
             # Record execution in shared state
@@ -262,3 +272,58 @@ def _make_finish_record(decision_dict: dict[str, Any], iteration: int):
 
 # ─── Module-level singleton (replaces old orchestrator singleton) ──────────────
 multi_agent_orchestrator = MultiAgentOrchestrator()
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        print("=" * 75)
+        print("  Gemma 4 Autonomous Multi-Agent Security & Compliance Assessment")
+        print("=" * 75)
+
+        sample_workspace = (
+            Path(__file__).resolve().parent.parent.parent.parent
+            / "sample-projects"
+            / "insecure-rag-agent"
+        )
+        target_dir = sample_workspace if sample_workspace.exists() else None
+
+        print(f"Target Project   : Insecure RAG Agent Demo")
+        print(f"Target Directory : {target_dir or 'Architecture Specification'}")
+        print("Initiating autonomous supervisor loop...\n")
+
+        results = await multi_agent_orchestrator.run_pipeline(
+            project_name="Terminal Live Assessment Demo",
+            architecture_text="System connects to ChromaDB vector store and executes untrusted Python LLM tools.",
+            workspace_dir=target_dir,
+            target_frameworks=["OWASP-GENAI", "NIST-AI-RMF", "EU-AI-ACT"],
+        )
+
+        print("\n" + "=" * 75)
+        print("  Autonomous Multi-Agent Collaboration Trace")
+        print("=" * 75)
+        for idx, entry in enumerate(results.get("agent_execution_log", [])):
+            agent = entry.get("agent_name", "")
+            duration = entry.get("duration_seconds", 0.0)
+            decision = entry.get("supervisor_decision", {})
+            reason = decision.get("reason", "")
+            source = decision.get("source", "gemma4")
+            extra = " [FEEDBACK LOOP]" if decision.get("needs_extra_security_check") else ""
+            print(f"[{idx + 1}] Agent: {agent.upper():<12} | Runtime: {duration:.2f}s | Source: {source}{extra}")
+            print(f"    Supervisor Rationale: \"{reason}\"")
+            print(f"    Output Summary      : {entry.get('output_summary', '')}\n")
+
+        print("=" * 75)
+        print("  Assessment Audit Results")
+        print("=" * 75)
+        risk = results.get("risk_result", {})
+        comp = results.get("compliance_result", {})
+        print(f"Findings Detected  : {len(results.get('findings', []))}")
+        print(f"Risk Score         : {risk.get('overall_risk_score', 0)}/100 ({risk.get('risk_level', 'UNKNOWN')})")
+        print(f"Compliance Score   : {comp.get('compliance_score', 0):.1f}%")
+        print(f"Supervisor Total   : {results.get('supervisor_iterations', 0)} iterations")
+        print(f"Remediation Steps  : {len(results.get('remediation_roadmap', []))}")
+        print("=" * 75)
+
+    asyncio.run(main())
