@@ -1,0 +1,101 @@
+{
+  "framework_id": "OWASP-AGENTIC",
+  "name": "OWASP Top 10 for Agentic Applications",
+  "version": "2026",
+  "publisher": "OWASP GenAI Security Project",
+  "publication_date": "2026",
+  "source_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+  "disclaimer": "Independent academic implementation. Static checks provide indicators only and do not constitute OWASP endorsement or certification.",
+  "controls": [
+    {
+      "control_id": "ASI01",
+      "title": "Agent Goal Hijack",
+      "category": "Agent Objectives",
+      "description": "Malicious or untrusted inputs can redirect an agent from its intended objectives.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Test prompt and context boundaries against adversarial instructions and goal changes.",
+      "detection_categories": ["PROMPT_INJECTION", "CONTEXT_ISOLATION_WEAKNESS"]
+    },
+    {
+      "control_id": "ASI02",
+      "title": "Tool Misuse and Exploitation",
+      "category": "Tool Security",
+      "description": "Tools may be invoked in unsafe ways or with untrusted arguments and excessive capabilities.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Review tool allowlists, argument validation, permission scope, and approval gates.",
+      "detection_categories": ["EXCESSIVE_AGENCY", "INSECURE_OUTPUT_HANDLING"]
+    },
+    {
+      "control_id": "ASI03",
+      "title": "Identity and Privilege Abuse",
+      "category": "Identity and Access",
+      "description": "Agent identities and delegated permissions can be misused or exceed their authorized scope.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Check delegated identity, least privilege, credential handling, and authorization boundaries.",
+      "detection_categories": ["AUTHORIZATION_WEAKNESS", "AUTHENTICATION_WEAKNESS", "SENSITIVE_DATA_EXPOSURE"]
+    },
+    {
+      "control_id": "ASI04",
+      "title": "Agentic Supply Chain Vulnerabilities",
+      "category": "Supply Chain",
+      "description": "Models, tools, plugins, and other third-party components can introduce malicious behavior.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Inspect component provenance, dependency integrity, model sources, and update controls.",
+      "detection_categories": ["SUPPLY_CHAIN_VULNERABILITY"]
+    },
+    {
+      "control_id": "ASI05",
+      "title": "Unexpected Code Execution",
+      "category": "Execution",
+      "description": "Agent-driven or untrusted input may cause unintended code or command execution.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Trace untrusted data to code execution and enforce sandboxing and explicit authorization.",
+      "detection_categories": ["INSECURE_OUTPUT_HANDLING", "EXCESSIVE_AGENCY"]
+    },
+    {
+      "control_id": "ASI06",
+      "title": "Memory and Context Poisoning",
+      "category": "Memory and Context",
+      "description": "Persistent memory or context can be manipulated to influence future agent decisions.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Validate memory provenance, write permissions, retrieval boundaries, and tenant isolation.",
+      "detection_categories": ["PROMPT_INJECTION", "CONTEXT_ISOLATION_WEAKNESS", "VECTOR_EMBEDDING_WEAKNESS"]
+    },
+    {
+      "control_id": "ASI07",
+      "title": "Insecure Inter-Agent Communication",
+      "category": "Agent Communication",
+      "description": "Weak validation or trust boundaries between agents can enable spoofing or unsafe data flow.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Review agent identity, message integrity, authorization, and validation of peer output.",
+      "detection_categories": ["INTER_AGENT_COMMUNICATION", "AUTHORIZATION_WEAKNESS"]
+    },
+    {
+      "control_id": "ASI08",
+      "title": "Cascading Failures",
+      "category": "Reliability",
+      "description": "Failures or unsafe decisions can propagate across chained agents and dependent services.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Test bounded retries, timeouts, circuit breakers, and safe failure behavior across workflows.",
+      "detection_categories": ["RESOURCE_EXHAUSTION", "EXCEPTION_HANDLING_WEAKNESS"]
+    },
+    {
+      "control_id": "ASI09",
+      "title": "Human-Agent Trust Exploitation",
+      "category": "Human Oversight",
+      "description": "Users may over-trust agent outputs or approvals without sufficient verification or oversight.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Inspect human approval for consequential actions and communicate uncertainty and provenance.",
+      "detection_categories": ["INSECURE_OUTPUT_HANDLING", "BUSINESS_FLOW_ABUSE"]
+    },
+    {
+      "control_id": "ASI10",
+      "title": "Rogue Agents",
+      "category": "Agent Governance",
+      "description": "An unauthorized or compromised agent may act outside its assigned purpose or controls.",
+      "reference_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "verification_guidance": "Inventory agents and enforce approved identity, runtime boundaries, permissions, and monitoring.",
+      "detection_categories": ["EXCESSIVE_AGENCY", "AUTHORIZATION_WEAKNESS", "API_INVENTORY_WEAKNESS"]
+    }
+  ]
+}

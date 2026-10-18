@@ -7,7 +7,7 @@
   "properties": {
     "framework_id": {
       "type": "string",
-      "enum": ["OWASP-GENAI", "NIST-AI-RMF", "MITRE-ATLAS", "ISO-42001", "ISO-23894", "EU-AI-ACT"]
+      "enum": ["OWASP-GENAI", "OWASP-MCP", "OWASP-AGENTIC", "OWASP-WEB", "OWASP-API", "NIST-AI-RMF", "MITRE-ATLAS", "ISO-42001", "ISO-23894", "EU-AI-ACT"]
     },
     "name": {
       "type": "string"
@@ -52,6 +52,13 @@
           "is_conceptual_mapping": {
             "type": "boolean",
             "default": false
+          },
+          "detection_categories": {
+            "type": "array",
+            "description": "Scanner finding categories that provide direct evidence for this control.",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

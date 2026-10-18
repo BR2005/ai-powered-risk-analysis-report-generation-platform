@@ -159,7 +159,18 @@ async def upload_and_assess(
         )
 
     # Parse target frameworks json if provided
-    frameworks_list = ["OWASP-GENAI", "NIST-AI-RMF", "MITRE-ATLAS", "ISO-42001", "ISO-23894", "EU-AI-ACT"]
+    frameworks_list = [
+        "OWASP-GENAI",
+        "OWASP-MCP",
+        "OWASP-AGENTIC",
+        "OWASP-WEB",
+        "OWASP-API",
+        "NIST-AI-RMF",
+        "MITRE-ATLAS",
+        "ISO-42001",
+        "ISO-23894",
+        "EU-AI-ACT",
+    ]
     if target_frameworks:
         try:
             frameworks_list = json.loads(target_frameworks)

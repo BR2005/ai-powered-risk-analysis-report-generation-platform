@@ -1,0 +1,101 @@
+{
+  "framework_id": "OWASP-WEB",
+  "name": "OWASP Top 10 Web Application Security Risks",
+  "version": "2025",
+  "publisher": "OWASP Foundation",
+  "publication_date": "2025",
+  "source_url": "https://owasp.org/Top10/2025/",
+  "disclaimer": "Independent academic static-analysis mapping to OWASP Top 10:2025. No OWASP endorsement or certification is claimed.",
+  "controls": [
+    {
+      "control_id": "A01:2025",
+      "title": "Broken Access Control",
+      "category": "Authorization",
+      "description": "Authorization gaps can allow users to access actions or data beyond their permissions.",
+      "reference_url": "https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/",
+      "verification_guidance": "Test object, property, and function authorization across user roles and request paths.",
+      "detection_categories": ["AUTHORIZATION_WEAKNESS"]
+    },
+    {
+      "control_id": "A02:2025",
+      "title": "Security Misconfiguration",
+      "category": "Configuration",
+      "description": "Unsafe defaults or deployment and application configuration errors can expose the application.",
+      "reference_url": "https://owasp.org/Top10/2025/A02_2025-Security_Misconfiguration/",
+      "verification_guidance": "Review debug settings, CORS, TLS, default credentials, and deployment exposure.",
+      "detection_categories": ["SECURITY_MISCONFIGURATION", "SUPPLY_CHAIN_VULNERABILITY"]
+    },
+    {
+      "control_id": "A03:2025",
+      "title": "Software Supply Chain Failures",
+      "category": "Supply Chain",
+      "description": "Compromised or vulnerable software dependencies and build components can undermine the application.",
+      "reference_url": "https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/",
+      "verification_guidance": "Review dependency inventories, vulnerability status, provenance, and build integrity.",
+      "detection_categories": ["SUPPLY_CHAIN_VULNERABILITY"]
+    },
+    {
+      "control_id": "A04:2025",
+      "title": "Cryptographic Failures",
+      "category": "Cryptography",
+      "description": "Weak cryptographic practices or exposed secrets can compromise confidentiality and integrity.",
+      "reference_url": "https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/",
+      "verification_guidance": "Inspect secret storage, cryptographic configuration, and transport security.",
+      "detection_categories": ["SENSITIVE_DATA_EXPOSURE", "SECURITY_MISCONFIGURATION"]
+    },
+    {
+      "control_id": "A05:2025",
+      "title": "Injection",
+      "category": "Input and Output Handling",
+      "description": "Untrusted data interpreted as commands, queries, or markup can cause unintended execution.",
+      "reference_url": "https://owasp.org/Top10/2025/A05_2025-Injection/",
+      "verification_guidance": "Trace untrusted data to SQL, shell, template, and browser rendering sinks.",
+      "detection_categories": ["INSECURE_OUTPUT_HANDLING", "PROMPT_INJECTION", "SSRF_RISK"]
+    },
+    {
+      "control_id": "A06:2025",
+      "title": "Insecure Design",
+      "category": "Secure Design",
+      "description": "Missing or ineffective security design controls can expose fundamental application risks.",
+      "reference_url": "https://owasp.org/Top10/2025/A06_2025-Insecure_Design/",
+      "verification_guidance": "Review trust boundaries, threat models, abuse cases, and security requirements.",
+      "detection_categories": ["SECURITY_DESIGN_WEAKNESS", "EXCESSIVE_AGENCY"]
+    },
+    {
+      "control_id": "A07:2025",
+      "title": "Authentication Failures",
+      "category": "Authentication",
+      "description": "Authentication and session weaknesses can enable impersonation or account compromise.",
+      "reference_url": "https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/",
+      "verification_guidance": "Test identity verification, credential protection, session handling, and recovery flows.",
+      "detection_categories": ["AUTHENTICATION_WEAKNESS", "SENSITIVE_DATA_EXPOSURE"]
+    },
+    {
+      "control_id": "A08:2025",
+      "title": "Software or Data Integrity Failures",
+      "category": "Integrity",
+      "description": "Unverified code, data, or updates can be tampered with and cause unsafe behavior.",
+      "reference_url": "https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+      "verification_guidance": "Verify source and integrity of dependencies, serialized data, models, and update artifacts.",
+      "detection_categories": ["SUPPLY_CHAIN_VULNERABILITY"]
+    },
+    {
+      "control_id": "A09:2025",
+      "title": "Security Logging and Alerting Failures",
+      "category": "Logging and Monitoring",
+      "description": "Insufficient security event logging or alerting can delay detection and response.",
+      "reference_url": "https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+      "verification_guidance": "Verify relevant event coverage, protected logs, alerting, and sensitive-data redaction.",
+      "detection_categories": ["AUDIT_LOGGING_WEAKNESS", "SENSITIVE_DATA_EXPOSURE"]
+    },
+    {
+      "control_id": "A10:2025",
+      "title": "Mishandling of Exceptional Conditions",
+      "category": "Error Handling",
+      "description": "Unexpected conditions handled unsafely can expose data or leave the application in an insecure state.",
+      "reference_url": "https://owasp.org/Top10/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+      "verification_guidance": "Review exception handling, safe failure behavior, and exposure of internal errors.",
+      "detection_categories": ["EXCEPTION_HANDLING_WEAKNESS", "SECURITY_MISCONFIGURATION"]
+    }
+  ]
+}

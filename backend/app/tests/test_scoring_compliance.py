@@ -62,3 +62,27 @@ def test_compliance_mapper_control_classification():
     # Unaffected controls (e.g., EU-AI-ART-50 AI watermark transparency) should be NOT_EVIDENCED (absence of evidence, not missing!)
     eu_art50 = next(m for m in mappings if m["framework_id"] == "EU-AI-ACT" and m["control_id"] == "EU-AI-ART-50")
     assert eu_art50["status"] == "NOT_EVIDENCED"
+
+def test_new_owasp_frameworks_map_matching_scanner_evidence():
+    mapper = ComplianceMapper()
+    ssrf_finding = ScanFinding(
+        finding_id="TEST-SSRF-01",
+        title="Potential SSRF",
+        description="Client-controlled URL reaches outbound request",
+        category="SSRF_RISK",
+        severity="HIGH",
+        numerical_score=8.0,
+        confidence="SUSPECTED",
+        validation_status="REQUIRES_MANUAL_REVIEW",
+        owasp_id="API7:2023",
+        file_path="api.py",
+    )
+    mappings = mapper.evaluate_controls(
+        findings=[ssrf_finding],
+        target_frameworks=["OWASP-API", "OWASP-WEB"],
+    )
+
+    api7 = next(m for m in mappings if m["framework_id"] == "OWASP-API" and m["control_id"] == "API7:2023")
+    web_a05 = next(m for m in mappings if m["framework_id"] == "OWASP-WEB" and m["control_id"] == "A05:2025")
+    assert api7["status"] == "PARTIALLY_IMPLEMENTED"
+    assert web_a05["status"] == "PARTIALLY_IMPLEMENTED"

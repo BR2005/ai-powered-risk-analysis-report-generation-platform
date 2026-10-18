@@ -39,7 +39,18 @@ class AssessmentCreateRequest(BaseModel):
     description: str | None = None
     architecture_text: str | None = None
     target_frameworks: list[str] = Field(
-        default=["OWASP-GENAI", "NIST-AI-RMF", "MITRE-ATLAS", "ISO-42001", "ISO-23894", "EU-AI-ACT"]
+        default=[
+            "OWASP-GENAI",
+            "OWASP-MCP",
+            "OWASP-AGENTIC",
+            "OWASP-WEB",
+            "OWASP-API",
+            "NIST-AI-RMF",
+            "MITRE-ATLAS",
+            "ISO-42001",
+            "ISO-23894",
+            "EU-AI-ACT",
+        ]
     )
 
 class EvidenceResponse(BaseModel):

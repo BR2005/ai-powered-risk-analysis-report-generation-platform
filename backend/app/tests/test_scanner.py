@@ -43,3 +43,17 @@ def handle_user_query(user_input):
         eval_finding = next(f for f in findings if f.category == "INSECURE_OUTPUT_HANDLING")
         assert eval_finding.severity == "CRITICAL"
         assert eval_finding.owasp_id == "LLM05"
+
+def test_scanner_detects_ssrf_and_disabled_tls_validation():
+    source = '''
+response = requests.get(request.args["url"])
+client = httpx.Client(verify=False)
+'''
+    with tempfile.TemporaryDirectory() as tmpdir:
+        test_file = Path(tmpdir) / "api.py"
+        test_file.write_text(source)
+
+        findings = StaticScanner().scan_directory(Path(tmpdir))
+        categories = {finding.category for finding in findings}
+        assert "SSRF_RISK" in categories
+        assert "SECURITY_MISCONFIGURATION" in categories

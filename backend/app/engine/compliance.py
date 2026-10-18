@@ -113,18 +113,27 @@ class ComplianceMapper:
                     evidence_summary = "Application architecture does not utilize retrieval-augmented vector databases."
                     rationale = "Control is scoped specifically to RAG/vector store pipelines."
                     is_conc = False
-                elif fw_id == "OWASP-GENAI":
-                    # Direct check against findings matching this OWASP control ID
-                    matching_findings = [f for f in findings if f.owasp_id == ctrl_id]
-                    if any(f.severity in ("CRITICAL", "HIGH") for f in matching_findings):
+                elif fw_id == "OWASP-GENAI" or "detection_categories" in ctrl:
+                    # Directly associate detected evidence with the control it can substantiate.
+                    detection_categories = set(ctrl.get("detection_categories", []))
+                    matching_findings = [
+                        f for f in findings
+                        if f.owasp_id == ctrl_id or f.category in detection_categories
+                    ]
+                    confirmed_high_findings = [
+                        f for f in matching_findings
+                        if f.severity in ("CRITICAL", "HIGH")
+                        and (fw_id == "OWASP-GENAI" or f.validation_status == "VERIFIED")
+                    ]
+                    if confirmed_high_findings:
                         status = "MISSING_WITH_EVIDENCE"
                         evidence_summary = f"{len(matching_findings)} vulnerability finding(s) detected directly compromising this control."
                         rationale = f"Detected confirmed violations in code: {', '.join(f.finding_id for f in matching_findings[:3])}."
                         is_conc = False
                     elif len(matching_findings) > 0:
                         status = "PARTIALLY_IMPLEMENTED"
-                        evidence_summary = f"{len(matching_findings)} medium/low findings or warnings identified."
-                        rationale = f"Partial mitigation detected with residual gaps: {', '.join(f.finding_id for f in matching_findings[:3])}."
+                        evidence_summary = f"{len(matching_findings)} finding(s) or heuristic warning(s) need remediation or manual review."
+                        rationale = f"Potential control gaps require review: {', '.join(f.finding_id for f in matching_findings[:3])}."
                         is_conc = False
                     else:
                         # No vulnerabilities found for this category

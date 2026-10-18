@@ -12,6 +12,50 @@
       "disclaimer": "Academic reference inspired by OWASP GenAI Security Project. No official endorsement."
     },
     {
+      "id": "OWASP-MCP",
+      "name": "OWASP Top 10 for MCP",
+      "version": "2025",
+      "publisher": "OWASP MCP Top 10 Project",
+      "file": "owasp_mcp_top10.json",
+      "category": "MCP Security",
+      "controls_count": 10,
+      "source_url": "https://owasp.org/www-project-mcp-top-10/",
+      "disclaimer": "Independent static-analysis mapping to OWASP MCP Top 10 (2025). A control marked not evidenced is not a pass or certification."
+    },
+    {
+      "id": "OWASP-AGENTIC",
+      "name": "OWASP Top 10 for Agentic Applications",
+      "version": "2026",
+      "publisher": "OWASP GenAI Security Project",
+      "file": "owasp_agentic_top10.json",
+      "category": "Agentic AI Security",
+      "controls_count": 10,
+      "source_url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "disclaimer": "Independent static-analysis mapping to OWASP Top 10 for Agentic Applications (2026). A control marked not evidenced is not a pass or certification."
+    },
+    {
+      "id": "OWASP-WEB",
+      "name": "OWASP Top 10 Web Application Security Risks",
+      "version": "2025",
+      "publisher": "OWASP Foundation",
+      "file": "owasp_web_top10.json",
+      "category": "Web Application Security",
+      "controls_count": 10,
+      "source_url": "https://owasp.org/Top10/2025/",
+      "disclaimer": "Independent static-analysis mapping to OWASP Top 10:2025. A control marked not evidenced is not a pass or certification."
+    },
+    {
+      "id": "OWASP-API",
+      "name": "OWASP API Security Top 10",
+      "version": "2023",
+      "publisher": "OWASP API Security Project",
+      "file": "owasp_api_top10.json",
+      "category": "API Security",
+      "controls_count": 10,
+      "source_url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+      "disclaimer": "Independent static-analysis mapping to OWASP API Security Top 10 (2023). A control marked not evidenced is not a pass or certification."
+    },
+    {
       "id": "NIST-AI-RMF",
       "name": "NIST AI Risk Management Framework (AI RMF 1.0)",
       "version": "1.0",

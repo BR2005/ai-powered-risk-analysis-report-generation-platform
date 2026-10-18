@@ -1,0 +1,101 @@
+{
+  "framework_id": "OWASP-MCP",
+  "name": "OWASP Top 10 for MCP",
+  "version": "2025",
+  "publisher": "OWASP MCP Top 10 Project",
+  "publication_date": "2025",
+  "source_url": "https://owasp.org/www-project-mcp-top-10/",
+  "disclaimer": "Independent academic implementation. OWASP MCP Top 10 is a living security reference, not a certification.",
+  "controls": [
+    {
+      "control_id": "MCP01:2025",
+      "title": "Token Mismanagement & Secret Exposure",
+      "category": "Credentials",
+      "description": "Secrets or access tokens may be exposed through code, configuration, memory, or protocol logs.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Inspect credential storage, token lifetime, logs, and secret redaction.",
+      "detection_categories": ["SENSITIVE_DATA_EXPOSURE"]
+    },
+    {
+      "control_id": "MCP02:2025",
+      "title": "Privilege Escalation via Scope Creep",
+      "category": "Authorization",
+      "description": "Agent or tool permissions may exceed the minimum required scope or expand without review.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Review tool permissions, scope boundaries, and authorization checks.",
+      "detection_categories": ["EXCESSIVE_AGENCY", "AUTHORIZATION_WEAKNESS"]
+    },
+    {
+      "control_id": "MCP03:2025",
+      "title": "Tool Poisoning",
+      "category": "Tool Integrity",
+      "description": "Untrusted tools, metadata, or tool responses may manipulate an agent's decisions.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Verify tool provenance, integrity, and handling of untrusted tool output.",
+      "detection_categories": ["TOOL_POISONING", "SUPPLY_CHAIN_VULNERABILITY", "INSECURE_OUTPUT_HANDLING"]
+    },
+    {
+      "control_id": "MCP04:2025",
+      "title": "Software Supply Chain Attacks & Dependency Tampering",
+      "category": "Supply Chain",
+      "description": "Compromised packages or dependencies can alter MCP server and tool behavior.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Review dependency pinning, provenance, integrity checks, and vulnerable packages.",
+      "detection_categories": ["SUPPLY_CHAIN_VULNERABILITY"]
+    },
+    {
+      "control_id": "MCP05:2025",
+      "title": "Command Injection & Execution",
+      "category": "Execution",
+      "description": "Untrusted content may reach shell, code execution, or other command interpreters.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Trace untrusted values to command execution and require strict validation and least privilege.",
+      "detection_categories": ["EXCESSIVE_AGENCY", "INSECURE_OUTPUT_HANDLING"]
+    },
+    {
+      "control_id": "MCP06:2025",
+      "title": "Prompt Injection via Contextual Payloads",
+      "category": "Prompt and Context",
+      "description": "Instructions embedded in user or external content may influence agent behavior.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Test untrusted tool and retrieved content boundaries, instruction hierarchy, and injection mitigations.",
+      "detection_categories": ["PROMPT_INJECTION"]
+    },
+    {
+      "control_id": "MCP07:2025",
+      "title": "Insufficient Authentication & Authorization",
+      "category": "Identity and Access",
+      "description": "Weak identity verification or access checks can expose MCP servers, tools, or data.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Test authentication, per-tool authorization, identity propagation, and access boundaries.",
+      "detection_categories": ["AUTHORIZATION_WEAKNESS", "AUTHENTICATION_WEAKNESS"]
+    },
+    {
+      "control_id": "MCP08:2025",
+      "title": "Lack of Audit and Telemetry",
+      "category": "Logging and Monitoring",
+      "description": "Missing security-relevant event records can obstruct detection and incident response.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Verify protected audit records for tool calls, identity, context changes, and security events.",
+      "detection_categories": ["AUDIT_LOGGING_WEAKNESS"]
+    },
+    {
+      "control_id": "MCP09:2025",
+      "title": "Shadow MCP Servers",
+      "category": "Deployment Governance",
+      "description": "Unmanaged MCP server deployments can evade inventory, security policy, and monitoring.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Inventory deployed servers and inspect deployment configuration, exposure, and ownership.",
+      "detection_categories": ["SECURITY_MISCONFIGURATION", "API_INVENTORY_WEAKNESS"]
+    },
+    {
+      "control_id": "MCP10:2025",
+      "title": "Context Injection & Over-Sharing",
+      "category": "Context Isolation",
+      "description": "Shared or persistent context can leak data across users, tasks, or agents.",
+      "reference_url": "https://owasp.org/www-project-mcp-top-10/",
+      "verification_guidance": "Check session and tenant isolation, context lifetime, and access controls on retrieved data.",
+      "detection_categories": ["CONTEXT_ISOLATION_WEAKNESS", "SENSITIVE_DATA_EXPOSURE", "VECTOR_EMBEDDING_WEAKNESS"]
+    }
+  ]
+}

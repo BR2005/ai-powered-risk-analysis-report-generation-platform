@@ -27,6 +27,10 @@ export const NewAssessment: React.FC = () => {
   // Framework Selection
   const allFrameworks = [
     { id: 'OWASP-GENAI', name: 'OWASP GenAI Top 10', category: 'AppSec' },
+    { id: 'OWASP-MCP', name: 'OWASP MCP Top 10', category: 'MCP Security' },
+    { id: 'OWASP-AGENTIC', name: 'OWASP Agentic Applications Top 10', category: 'Agentic Security' },
+    { id: 'OWASP-WEB', name: 'OWASP Web Application Top 10', category: 'Web Security' },
+    { id: 'OWASP-API', name: 'OWASP API Security Top 10', category: 'API Security' },
     { id: 'NIST-AI-RMF', name: 'NIST AI RMF 1.0', category: 'Risk' },
     { id: 'MITRE-ATLAS', name: 'MITRE ATLAS', category: 'Threats' },
     { id: 'ISO-42001', name: 'ISO/IEC 42001 (AIMS)', category: 'Management' },
@@ -35,6 +39,10 @@ export const NewAssessment: React.FC = () => {
   ];
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([
     'OWASP-GENAI',
+    'OWASP-MCP',
+    'OWASP-AGENTIC',
+    'OWASP-WEB',
+    'OWASP-API',
     'NIST-AI-RMF',
     'MITRE-ATLAS',
     'ISO-42001',

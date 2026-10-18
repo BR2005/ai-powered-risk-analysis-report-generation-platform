@@ -1,0 +1,101 @@
+{
+  "framework_id": "OWASP-API",
+  "name": "OWASP API Security Top 10",
+  "version": "2023",
+  "publisher": "OWASP API Security Project",
+  "publication_date": "2023",
+  "source_url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+  "disclaimer": "Independent academic static-analysis mapping to OWASP API Security Top 10 (2023). No OWASP endorsement or certification is claimed.",
+  "controls": [
+    {
+      "control_id": "API1:2023",
+      "title": "Broken Object Level Authorization",
+      "category": "Authorization",
+      "description": "Object access based on client-controlled identifiers may lack per-object authorization.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/",
+      "verification_guidance": "Test access to each object using identities with different ownership and permissions.",
+      "detection_categories": ["AUTHORIZATION_WEAKNESS"]
+    },
+    {
+      "control_id": "API2:2023",
+      "title": "Broken Authentication",
+      "category": "Authentication",
+      "description": "Weak or incorrectly implemented authentication can allow an attacker to impersonate a client.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/",
+      "verification_guidance": "Test credential issuance, validation, expiration, and session/token handling.",
+      "detection_categories": ["AUTHENTICATION_WEAKNESS", "SENSITIVE_DATA_EXPOSURE"]
+    },
+    {
+      "control_id": "API3:2023",
+      "title": "Broken Object Property Level Authorization",
+      "category": "Authorization and Data Exposure",
+      "description": "API responses or updates may expose or modify object properties without adequate authorization.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/",
+      "verification_guidance": "Test field-level read and write permissions, response schemas, and mass assignment.",
+      "detection_categories": ["AUTHORIZATION_WEAKNESS", "SENSITIVE_DATA_EXPOSURE"]
+    },
+    {
+      "control_id": "API4:2023",
+      "title": "Unrestricted Resource Consumption",
+      "category": "Availability",
+      "description": "Unbounded requests or processing can exhaust service resources or incur excessive cost.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/",
+      "verification_guidance": "Review request size, quotas, rate limits, timeouts, pagination, and expensive operations.",
+      "detection_categories": ["RESOURCE_EXHAUSTION"]
+    },
+    {
+      "control_id": "API5:2023",
+      "title": "Broken Function Level Authorization",
+      "category": "Authorization",
+      "description": "Users may access API functions outside their assigned role or permission level.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa5-broken-function-level-authorization/",
+      "verification_guidance": "Test access to privileged functions under all supported roles and identities.",
+      "detection_categories": ["AUTHORIZATION_WEAKNESS"]
+    },
+    {
+      "control_id": "API6:2023",
+      "title": "Unrestricted Access to Sensitive Business Flows",
+      "category": "Business Logic",
+      "description": "Automated or abusive access to sensitive workflows may cause business harm despite valid API use.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa6-unrestricted-access-to-sensitive-business-flows/",
+      "verification_guidance": "Identify high-impact workflows and test abuse resistance, quotas, and anomaly controls.",
+      "detection_categories": ["BUSINESS_FLOW_ABUSE"]
+    },
+    {
+      "control_id": "API7:2023",
+      "title": "Server Side Request Forgery",
+      "category": "Request Routing",
+      "description": "Fetching a client-controlled URL can cause the API to access unintended internal or external services.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa7-server-side-request-forgery/",
+      "verification_guidance": "Trace user-controlled URLs into outbound requests and verify destination allowlisting.",
+      "detection_categories": ["SSRF_RISK"]
+    },
+    {
+      "control_id": "API8:2023",
+      "title": "Security Misconfiguration",
+      "category": "Configuration",
+      "description": "Unsafe API or infrastructure settings can expose endpoints or weaken security controls.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/",
+      "verification_guidance": "Review CORS, TLS, debug settings, default configuration, and error responses.",
+      "detection_categories": ["SECURITY_MISCONFIGURATION", "SUPPLY_CHAIN_VULNERABILITY"]
+    },
+    {
+      "control_id": "API9:2023",
+      "title": "Improper Inventory Management",
+      "category": "Asset Inventory",
+      "description": "Untracked API versions, hosts, or endpoints can remain exposed without security oversight.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xa9-improper-inventory-management/",
+      "verification_guidance": "Compare deployed services and versions with a current, owned API inventory.",
+      "detection_categories": ["API_INVENTORY_WEAKNESS"]
+    },
+    {
+      "control_id": "API10:2023",
+      "title": "Unsafe Consumption of APIs",
+      "category": "Third-Party APIs",
+      "description": "Insufficient validation of third-party API responses can introduce malicious data or behavior.",
+      "reference_url": "https://owasp.org/API-Security/editions/2023/en/0xaa-unsafe-consumption-of-apis/",
+      "verification_guidance": "Treat upstream data as untrusted and validate schemas, integrity, errors, and destinations.",
+      "detection_categories": ["UNSAFE_API_CONSUMPTION", "INSECURE_OUTPUT_HANDLING"]
+    }
+  ]
+}

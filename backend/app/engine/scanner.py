@@ -271,6 +271,36 @@ class StaticScanner:
                 "owasp_id": "LLM05",
                 "remediation": "Sanitize HTML using DOMPurify before rendering, or use safe markdown rendering components that disable raw HTML.",
                 "remediation_snippet": "import DOMPurify from 'dompurify';\n<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(response) }} />"
+            },
+            # Client-controlled URL passed to an outbound request
+            {
+                "id": "RULE-SSRF-USER-URL",
+                "pattern": re.compile(r"""(?i)(?:requests\.(?:get|post|put|delete|request)|httpx\.(?:get|post|put|delete|request)|fetch|urlopen)\s*\(\s*(?:request\.(?:args|query|query_params|url|body)|req\.(?:query|params|body)|(?:user|untrusted|external|target)_url)\b"""),
+                "title": "Potential Server-Side Request Forgery via Client-Controlled URL",
+                "description": "A URL that appears to originate from request data is passed to an outbound HTTP request. Without destination validation, this may allow requests to unintended internal or external services.",
+                "category": "SSRF_RISK",
+                "severity": "HIGH",
+                "numerical_score": 8.0,
+                "confidence": "SUSPECTED",
+                "validation_status": "REQUIRES_MANUAL_REVIEW",
+                "owasp_id": "API7:2023",
+                "remediation": "Validate outbound destinations against an explicit allowlist, reject private and link-local addresses, and re-check redirects.",
+                "remediation_snippet": "if parsed_url.hostname not in ALLOWED_HOSTS:\n    raise ValueError('Destination is not allowed')"
+            },
+            # Disabled TLS certificate validation
+            {
+                "id": "RULE-TLS-VERIFY-DISABLED",
+                "pattern": re.compile(r"""(?i)(?:verify\s*=\s*False|rejectUnauthorized\s*:\s*false)"""),
+                "title": "TLS Certificate Verification Disabled",
+                "description": "TLS certificate validation is disabled. This can allow an attacker to intercept or modify traffic.",
+                "category": "SECURITY_MISCONFIGURATION",
+                "severity": "HIGH",
+                "numerical_score": 8.0,
+                "confidence": "CONFIRMED",
+                "validation_status": "VERIFIED",
+                "owasp_id": "A02:2025",
+                "remediation": "Enable certificate validation and configure a trusted certificate authority instead of disabling TLS verification.",
+                "remediation_snippet": "response = requests.get(url, verify=True)"
             }
         ]
 

@@ -32,11 +32,16 @@
   7. *Report Generation Agent:* Assembles structured JSON reports and executive PDF audit artifacts.
 - **Full Crosswalk Framework Coverage:**
   - **OWASP GenAI Top 10** (LLM01–LLM10)
+  - **OWASP MCP Top 10** (MCP01:2025–MCP10:2025)
+  - **OWASP Top 10 for Agentic Applications** (ASI01–ASI10, 2026)
+  - **OWASP Top 10 Web Application Security Risks** (A01:2025–A10:2025)
+  - **OWASP API Security Top 10** (API1:2023–API10:2023)
   - **NIST AI RMF 1.0** (Govern, Map, Measure, Manage)
   - **MITRE ATLAS** (AML.T0051, AML.T0054, AML.T0043, AML.T0025, AML.T0040)
   - **ISO/IEC 42001:2023** (AI Management Systems)
   - **ISO/IEC 23894:2023** (AI Risk Management Guidance)
   - **EU AI Act** (Articles 9, 10, 13, 14, 15, 50)
+- The four additional OWASP catalogs are selectable during assessment and included by default. Static rules link detected evidence to relevant controls; controls without applicable static evidence remain **NOT_EVIDENCED**, not passed. These catalogs are assessment aids and do not replace dynamic testing or manual review.
 - **Dual Runtime Support:** Operates 100% out of the box with deterministic safety guardrails without requiring paid API keys or external services, with optional pluggable support for Gemma 4 via Google AI Studio, local Ollama, or OpenAI-compatible endpoints.
 
 ---
@@ -68,6 +73,10 @@ genai-security-platform/
 │   ├── schema.json             # JSON Schema for control definitions
 │   ├── frameworks.json         # Frameworks registry
 │   ├── owasp_genai_top10.json
+│   ├── owasp_mcp_top10.json
+│   ├── owasp_agentic_top10.json
+│   ├── owasp_web_top10.json
+│   ├── owasp_api_top10.json
 │   ├── nist_ai_rmf.json
 │   ├── mitre_atlas.json
 │   ├── iso_42001.json
