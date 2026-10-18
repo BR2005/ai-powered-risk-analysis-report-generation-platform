@@ -43,6 +43,7 @@ class SharedAssessmentState:
 
     # ── Inputs (set before the workflow starts) ──────────────────────────────
     project_name: str = ""
+    assessment_id: str | None = None
     architecture_text: str | None = None
     workspace_dir: Path | None = None
     target_frameworks: list[str] = field(default_factory=list)

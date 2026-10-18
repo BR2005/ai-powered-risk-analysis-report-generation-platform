@@ -127,7 +127,8 @@ async def create_assessment(
             project_name=request.project_name,
             architecture_text=request.architecture_text,
             workspace_dir=None,
-            target_frameworks=request.target_frameworks
+            target_frameworks=request.target_frameworks,
+            assessment_id=assessment.id,
         )
         _persist_assessment_results(db, assessment, results)
         return assessment
@@ -216,7 +217,8 @@ async def upload_and_assess(
                 project_name=project_name,
                 architecture_text=architecture_text,
                 workspace_dir=extracted_dir,
-                target_frameworks=frameworks_list
+                target_frameworks=frameworks_list,
+                assessment_id=assessment.id,
             )
             _persist_assessment_results(db, assessment, results)
             return assessment
