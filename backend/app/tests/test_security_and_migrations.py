@@ -6,35 +6,9 @@ from app.config import settings
 from app.database import ensure_assessment_tracking_columns
 
 
-def test_assessment_and_findings_routes_require_api_key(client):
+def test_assessment_and_findings_routes_are_available_without_api_key(client):
     assert client.get("/api/v1/assessments").status_code == 200
-
-    response = client.get(
-        "/api/v1/assessments",
-        headers={"X-API-Key": "incorrect-key"},
-    )
-    assert response.status_code == 401
-
-    response = client.get(
-        "/api/v1/findings",
-        headers={"X-API-Key": "incorrect-key"},
-    )
-    assert response.status_code == 401
-
-    response = client.get(
-        "/api/v1/assessments/unknown/report.pdf",
-        headers={"X-API-Key": "incorrect-key"},
-    )
-    assert response.status_code == 401
-
-
-def test_protected_routes_fail_closed_without_configured_key(client):
-    settings.api_access_key = None
-    response = client.get(
-        "/api/v1/assessments",
-        headers={"X-API-Key": "test-api-key"},
-    )
-    assert response.status_code == 503
+    assert client.get("/api/v1/findings").status_code == 200
 
 
 def test_assessment_tracking_migration_is_portable_and_idempotent():

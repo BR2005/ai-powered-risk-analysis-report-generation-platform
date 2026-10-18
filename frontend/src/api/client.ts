@@ -16,25 +16,6 @@ export const api = axios.create({
   },
 });
 
-api.interceptors.request.use((config) => {
-  const apiKey = sessionStorage.getItem('lucifer_api_key');
-  if (apiKey) {
-    config.headers.set('X-API-Key', apiKey);
-  }
-  return config;
-});
-
-export const authenticateApiKey = async (apiKey: string): Promise<void> => {
-  await api.get('/api/v1/assessments', {
-    headers: { 'X-API-Key': apiKey },
-  });
-  sessionStorage.setItem('lucifer_api_key', apiKey);
-};
-
-export const clearApiKey = (): void => {
-  sessionStorage.removeItem('lucifer_api_key');
-};
-
 export const checkHealth = async (): Promise<HealthStatus> => {
   const { data } = await api.get<HealthStatus>('/health');
   return data;

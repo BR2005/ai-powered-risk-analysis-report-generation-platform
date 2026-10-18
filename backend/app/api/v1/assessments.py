@@ -29,12 +29,10 @@ from app.utils.file_security import (
 )
 from app.agents.multi_agent_orchestrator import multi_agent_orchestrator
 from app.utils.pdf_generator import generate_pdf_report
-from app.security import require_api_key
 
 router = APIRouter(
     prefix="/assessments",
     tags=["Assessments"],
-    dependencies=[Depends(require_api_key)],
 )
 
 def _persist_assessment_results(

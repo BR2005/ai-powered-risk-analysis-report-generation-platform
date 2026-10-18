@@ -104,7 +104,7 @@ Open a PowerShell terminal:
 # Navigate to backend directory
 cd "d:\ai powered risk analysis report generation platform\backend"
 
-# Copy .env.example to .env and set a unique API_ACCESS_KEY before running.
+# Copy .env.example to .env.
 # Replace the placeholder model credentials if using a hosted model.
 
 # Activate existing virtual environment
@@ -132,15 +132,14 @@ Open your browser to `http://localhost:5173`.
 
 ## 4. Docker Compose Setup
 
-Copy the root `.env.example` to `.env` and replace both secrets before starting the stack:
+Copy the root `.env.example` to `.env` and set a unique database password before starting the stack:
 
 ```env
-API_ACCESS_KEY=replace_with_a_long_random_secret
 POSTGRES_PASSWORD=replace_with_a_long_url_safe_random_secret
 CORS_ALLOWED_ORIGINS=https://your-frontend-domain.example
 ```
 
-The key protects assessment, finding, and report endpoints. The frontend prompts for it and retains it only in the current browser tab. This is a shared-key setup: every key holder can access all stored assessments, so use it only for a trusted group and use HTTPS. Framework metadata and the health endpoint remain public.
+Assessment, finding, and report APIs do not require authentication. Anyone who can reach the backend can view, create, or modify assessment data. Keep deployments on a trusted network or put an authenticated access-control layer (for example, an identity-aware reverse proxy) in front of the backend before exposing it publicly. CORS is not authentication and does not prevent non-browser clients from calling the API.
 
 To launch the full stack (FastAPI Backend, React Nginx Frontend, and PostgreSQL with pgvector):
 
@@ -151,12 +150,11 @@ docker compose up --build
 - Frontend UI: `http://localhost:3000`
 - Backend API: `http://127.0.0.1:8000` (bound to localhost)
 - Swagger Docs: `http://localhost:8000/docs`
-- Access protected API routes with `X-API-Key: <API_ACCESS_KEY>`.
 - PostgreSQL is available only to services on the internal Docker network.
 
 ### Deploying the frontend separately (for example, Vercel)
 
-Set the Vercel build environment variable `VITE_API_BASE_URL` to the public HTTPS origin of the deployed backend, for example `https://api.example.com` (no trailing slash). Configure the backend's `CORS_ALLOWED_ORIGINS` to include the exact frontend origin, such as `https://your-app.vercel.app`, and set `API_ACCESS_KEY` on the backend. Then redeploy the frontend so Vite builds with the API URL. The browser sends the API key as `X-API-Key` for assessment, JSON-report, and PDF-download requests. Do not put `API_ACCESS_KEY` in any `VITE_*` variable or frontend setting.
+Set the Vercel build environment variable `VITE_API_BASE_URL` to the public HTTPS origin of the deployed backend, for example `https://api.example.com` (no trailing slash). Configure the backend's `CORS_ALLOWED_ORIGINS` to include the exact frontend origin, such as `https://your-app.vercel.app`, then redeploy the frontend so Vite builds with the API URL. CORS only controls browser-origin access; it does not authenticate users. Do not expose this unauthenticated API to the public internet without an authenticated gateway or equivalent access controls.
 
 ---
 
