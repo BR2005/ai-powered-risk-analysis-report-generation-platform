@@ -8,13 +8,45 @@ COMPLIANCE_RULES_DIR = Path(os.getenv("COMPLIANCE_RULES_DIR", "/compliance-rules
 UPLOAD_DIR = BASE_DIR / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+def _resolve_database_url() -> str:
+    raw = os.getenv("DATABASE_URL")
+    if raw:
+        # Render PostgreSQL URLs start with postgres://, SQLAlchemy 2 requires postgresql://
+        if raw.startswith("postgres://"):
+            return raw.replace("postgres://", "postgresql://", 1)
+        # Handle SQLite paths
+        if raw.startswith("sqlite"):
+            if raw in ("sqlite:///./platform.db", "sqlite:///platform.db"):
+                try:
+                    db_path = BASE_DIR / "platform.db"
+                    db_path.parent.mkdir(parents=True, exist_ok=True)
+                    test_f = db_path.parent / ".perm_check"
+                    test_f.touch()
+                    test_f.unlink()
+                    return f"sqlite:///{db_path.as_posix()}"
+                except Exception:
+                    return "sqlite:////tmp/platform.db"
+            return raw
+        return raw
+
+    # Default fallback
+    try:
+        db_path = BASE_DIR / "platform.db"
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        test_f = db_path.parent / ".perm_check"
+        test_f.touch()
+        test_f.unlink()
+        return f"sqlite:///{db_path.as_posix()}"
+    except Exception:
+        return "sqlite:////tmp/platform.db"
+
 class Settings(BaseModel):
     app_name: str = "Lucifer: AI-Powered GenAI Security Risk & Compliance Platform"
     app_version: str = "1.0.0"
     api_v1_prefix: str = "/api/v1"
     
     # Database
-    database_url: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR}/platform.db")
+    database_url: str = _resolve_database_url()
     
     # File limits
     max_upload_size_bytes: int = 25 * 1024 * 1024  # 25 MB
