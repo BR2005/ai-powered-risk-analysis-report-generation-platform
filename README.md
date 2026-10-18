@@ -145,6 +145,10 @@ docker compose up --build
 - Access protected API routes with `X-API-Key: <API_ACCESS_KEY>`.
 - PostgreSQL is available only to services on the internal Docker network.
 
+### Deploying the frontend separately (for example, Vercel)
+
+Set the Vercel build environment variable `VITE_API_BASE_URL` to the public HTTPS origin of the deployed backend, for example `https://api.example.com` (no trailing slash). Configure the backend's `CORS_ALLOWED_ORIGINS` to include the exact frontend origin, such as `https://your-app.vercel.app`, and set `API_ACCESS_KEY` on the backend. Then redeploy the frontend so Vite builds with the API URL. The browser sends the API key as `X-API-Key` for assessment, JSON-report, and PDF-download requests. Do not put `API_ACCESS_KEY` in any `VITE_*` variable or frontend setting.
+
 ---
 
 ## 5. Running Automated Tests

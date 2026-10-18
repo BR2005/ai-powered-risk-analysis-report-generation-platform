@@ -97,6 +97,8 @@ export const downloadReportPdf = async (assessmentId: string): Promise<void> => 
   const link = document.createElement('a');
   link.href = url;
   link.download = `assessment-${assessmentId.slice(0, 8)}.pdf`;
+  document.body.appendChild(link);
   link.click();
-  URL.revokeObjectURL(url);
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 };

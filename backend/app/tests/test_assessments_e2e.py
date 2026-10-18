@@ -67,6 +67,8 @@ def query_bot(user_q):
     pdf_res = client.get(f"/api/v1/assessments/{vuln_assessment_id}/report.pdf")
     assert pdf_res.status_code == 200
     assert pdf_res.headers["content-type"] == "application/pdf"
+    assert "attachment" in pdf_res.headers["content-disposition"].lower()
+    assert pdf_res.content.startswith(b"%PDF-")
     assert len(pdf_res.content) > 1000
 
     # 6. Retrieve findings with filters
