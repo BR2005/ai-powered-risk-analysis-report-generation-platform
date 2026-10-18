@@ -8,8 +8,30 @@ from app.api.v1.frameworks import router as frameworks_router
 from app.api.v1.findings import router as findings_router
 from app.schemas.assessment import HealthResponse
 
+from sqlalchemy import inspect, text
+
 # Create database tables automatically
 Base.metadata.create_all(bind=engine)
+
+# Add workflow columns for databases created before the multi-agent upgrade.
+with engine.begin() as conn:
+    inspector = inspect(conn)
+    if inspector.has_table("assessments"):
+        existing_columns = {
+            column["name"] for column in inspector.get_columns("assessments")
+        }
+        missing_columns = {
+            "agent_execution_log": "JSON DEFAULT '[]'",
+            "supervisor_iterations": "INTEGER DEFAULT 0",
+        }
+        for column_name, column_definition in missing_columns.items():
+            if column_name not in existing_columns:
+                conn.execute(
+                    text(
+                        f"ALTER TABLE assessments ADD COLUMN "
+                        f"{column_name} {column_definition}"
+                    )
+                )
 
 app = FastAPI(
     title=settings.app_name,

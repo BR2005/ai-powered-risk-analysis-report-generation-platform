@@ -49,6 +49,23 @@ export interface ControlMapping {
   is_conceptual: boolean;
 }
 
+export interface SupervisorDecision {
+  next_agent: string;
+  reason: string;
+  needs_extra_security_check: boolean;
+  source?: string;
+  iteration?: number;
+}
+
+export interface AgentExecutionRecord {
+  agent_name: string;
+  started_at: string;
+  completed_at: string;
+  duration_seconds: number;
+  supervisor_decision: SupervisorDecision;
+  output_summary: string;
+}
+
 export interface AssessmentSummary {
   id: string;
   project_name: string;
@@ -61,6 +78,8 @@ export interface AssessmentSummary {
   findings_count: number;
   severity_breakdown: Record<string, number>;
   compliance_breakdown: Record<string, number>;
+  agent_execution_log?: AgentExecutionRecord[];
+  supervisor_iterations?: number;
   created_at: string;
   completed_at?: string;
 }

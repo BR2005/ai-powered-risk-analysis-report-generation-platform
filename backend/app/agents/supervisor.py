@@ -31,6 +31,7 @@ ALLOWED_AGENTS: set[str] = {
 
 # Hard cap on how many times the supervisor may loop back
 MAX_SUPERVISOR_ITERATIONS = 8
+MAX_EXTRA_SECURITY_LOOPS = 2
 
 SYSTEM_PROMPT = """You are the Gemma 4 Multi-Agent Security Supervisor for an AI-Powered GenAI Security
 Risk & Compliance Assessment Platform.
@@ -68,18 +69,26 @@ Rules you MUST follow:
 
 
 class SupervisorDecision:
-    """Parsed and validated routing decision from Gemma 4."""
+    """Parsed and validated routing decision from Gemma 4 or fallback guardrail."""
 
-    def __init__(self, next_agent: str, reason: str, needs_extra_check: bool):
+    def __init__(
+        self,
+        next_agent: str,
+        reason: str,
+        needs_extra_check: bool = False,
+        source: str = "gemma4",
+    ):
         self.next_agent = next_agent
         self.reason = reason
         self.needs_extra_check = needs_extra_check
+        self.source = source
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "next_agent": self.next_agent,
             "reason": self.reason,
             "needs_extra_security_check": self.needs_extra_check,
+            "source": self.source,
         }
 
 
@@ -89,7 +98,7 @@ class Gemma4Supervisor:
 
     If Gemma 4 is unavailable (no key, Ollama offline) the supervisor
     falls back to a deterministic priority-queue so the platform stays
-    functional.  All decisions—model-generated or fallback—are logged in
+    functional. All decisions—model-generated or fallback—are logged in
     the shared state with a 'source' field so the UI can distinguish them.
     """
 
@@ -109,6 +118,7 @@ class Gemma4Supervisor:
                 next_agent="FINISH",
                 reason=f"Investigation limit of {MAX_SUPERVISOR_ITERATIONS} iterations reached.",
                 needs_extra_check=False,
+                source="supervisor_guardrail",
             )
 
         # Build a compact state snapshot for the model
@@ -123,8 +133,18 @@ class Gemma4Supervisor:
         if raw_response:
             decision = self._parse_model_response(raw_response)
             if decision:
-                decision_dict = decision.to_dict()
-                decision_dict["source"] = "gemma4"
+                # Enforce investigation limits on extra security / verification loops
+                if (
+                    decision.next_agent in ("security", "evidence")
+                    and decision.next_agent in state.completed_agents
+                    and state.extra_security_loops >= MAX_EXTRA_SECURITY_LOOPS
+                ):
+                    logger.info(
+                        "Supervisor loop limit reached (%d extra loops). Routing forward to risk/compliance.",
+                        state.extra_security_loops,
+                    )
+                    return self._fallback_decision(state)
+
                 logger.info(
                     "Gemma 4 routing decision (iter %d): %s — %s",
                     state.supervisor_iterations,
@@ -149,7 +169,7 @@ class Gemma4Supervisor:
         unverified_count = sum(
             1
             for f in state.findings
-            if getattr(f, "validation_status", "") == "REQUIRES_MANUAL_REVIEW"
+            if getattr(f, "validation_status", "") != "VERIFIED"
         )
         return {
             "completed_agents": list(state.completed_agents),
@@ -185,8 +205,8 @@ class Gemma4Supervisor:
             logger.warning("Supervisor: JSON parse error: %s", exc)
             return None
 
-        next_agent = data.get("next_agent", "").strip()
-        reason = data.get("reason", "Model routing decision.").strip()
+        next_agent = str(data.get("next_agent", "")).strip()
+        reason = str(data.get("reason", "Model routing decision.")).strip()
         needs_extra = bool(data.get("needs_extra_security_check", False))
 
         # Safety: enforce allowlist
@@ -201,11 +221,12 @@ class Gemma4Supervisor:
             next_agent=next_agent,
             reason=reason,
             needs_extra_check=needs_extra,
+            source="gemma4",
         )
 
     @staticmethod
     def _fallback_decision(state: "SharedAssessmentState") -> SupervisorDecision:  # type: ignore[name-defined]
-        """Priority-queue fallback used when Gemma 4 is offline."""
+        """Priority-queue fallback with bounded feedback loop used when Gemma 4 is offline."""
         done = state.completed_agents
 
         priority_queue = [
@@ -218,34 +239,41 @@ class Gemma4Supervisor:
             ("report", "All prerequisites complete — generating final report."),
         ]
 
-        # Allow one extra security loop if there are high-severity findings
+        # ── Bounded feedback loop for additional investigation ──────────────
+        # If both security and evidence have run, but there are unverified high/critical
+        # findings, allow a bounded additional verification loop.
         if (
             "security" in done
             and "evidence" in done
-            and state.extra_security_loops == 0
+            and state.extra_security_loops < MAX_EXTRA_SECURITY_LOOPS
         ):
-            critical_count = sum(
-                1 for f in state.findings if getattr(f, "severity", "") == "CRITICAL"
+            has_unverified_severe = any(
+                getattr(f, "severity", "") in ("CRITICAL", "HIGH")
+                and getattr(f, "validation_status", "") != "VERIFIED"
+                for f in state.findings
             )
-            if critical_count > 0 and "risk" not in done:
+            if has_unverified_severe and "risk" not in done:
                 return SupervisorDecision(
-                    next_agent="risk",
-                    reason="(fallback) Critical findings found — proceeding to risk scoring.",
-                    needs_extra_check=False,
+                    next_agent="evidence",
+                    reason="(guardrail) Unverified high-severity findings detected — executing bounded evidence verification loop.",
+                    needs_extra_check=True,
+                    source="fallback_loop",
                 )
 
         for agent_name, reason in priority_queue:
             if agent_name not in done:
                 return SupervisorDecision(
                     next_agent=agent_name,
-                    reason=f"(fallback) {reason}",
+                    reason=f"(guardrail) {reason}",
                     needs_extra_check=False,
+                    source="fallback_queue",
                 )
 
         return SupervisorDecision(
             next_agent="FINISH",
-            reason="(fallback) All required agents have completed their work.",
+            reason="(guardrail) All required agents have completed their work.",
             needs_extra_check=False,
+            source="guardrail_finish",
         )
 
 

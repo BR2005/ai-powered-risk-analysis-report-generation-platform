@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: aegis_backend
+    container_name: lucifer_backend
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -23,7 +23,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: aegis_frontend
+    container_name: lucifer_frontend
     restart: unless-stopped
     ports:
       - "3000:80"
@@ -32,7 +32,7 @@ services:
 
   db:
     image: pgvector/pgvector:pg16
-    container_name: aegis_postgres
+    container_name: lucifer_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres

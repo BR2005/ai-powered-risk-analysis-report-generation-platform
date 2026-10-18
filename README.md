@@ -9,6 +9,12 @@
 **Lucifer** is a full-stack, modular cybersecurity platform that accepts a GenAI application's source code (ZIP archive, Python/JS/TS files), architecture configuration, or documentation and performs automated, evidence-grounded security risk and compliance gap analysis.
 
 ### Core Capabilities
+- **Gemma 4 Autonomous Multi-Agent Supervision:**
+  - Uses Google DeepMind's configured **Gemma 4** model as the autonomous routing supervisor.
+  - Dynamic conditional routing: Gemma 4 inspects real-time assessment findings, severity levels, and evidence verification status to decide which specialist agent runs next instead of following a fixed linear sequence.
+  - Bounded feedback loops: The supervisor can request additional security checks or deeper evidence verification passes when high or critical vulnerabilities are discovered.
+  - Safety & Guardrails: Model output validation, strict tool allowlist enforcement (`ALLOWED_AGENT_TOOLS`), prevention of arbitrary code execution, and hard execution caps (`MAX_SUPERVISOR_ITERATIONS = 8`, `MAX_EXTRA_SECURITY_LOOPS = 2`).
+  - Deterministic priority-queue guardrail: Seamlessly steps in if the model is offline or unreachable.
 - **Static Security Analysis:** AST-level and signature-based detection for GenAI risks:
   - Direct and indirect **Prompt Injection** (F-strings, unsanitized concatenation)
   - **Sensitive Information Disclosure** and hardcoded API keys (with automated redaction)
@@ -16,7 +22,7 @@
   - **Excessive Agency** (unrestricted OS shell/subprocess commands in agent tools)
   - **Insecure Deserialization & Supply Chain** (`pickle.load()`, `torch.load` without `weights_only=True`)
   - **Vector Store & RAG Weaknesses** (missing tenant isolation metadata filters)
-- **7-Stage Specialized AI Agents:**
+- **7-Stage Specialized AI Agents Orchestrated Autonomously:**
   1. *Reconnaissance Agent:* Identifies models, vector stores, tools, and trust boundaries.
   2. *Security Analysis Agent:* Executes static code and configuration scans.
   3. *Evidence Validation Agent:* Validates file evidence, line numbers, and sanitizes snippets.
@@ -31,7 +37,7 @@
   - **ISO/IEC 42001:2023** (AI Management Systems)
   - **ISO/IEC 23894:2023** (AI Risk Management Guidance)
   - **EU AI Act** (Articles 9, 10, 13, 14, 15, 50)
-- **Dual Runtime Support:** Operates 100% out of the box in deterministic mode without requiring paid API keys or external services, with optional pluggable support for local Ollama models or OpenAI-compatible endpoints.
+- **Dual Runtime Support:** Operates 100% out of the box with deterministic safety guardrails without requiring paid API keys or external services, with optional pluggable support for Gemma 4 via Google AI Studio, local Ollama, or OpenAI-compatible endpoints.
 
 ---
 
@@ -42,20 +48,20 @@ genai-security-platform/
 ├── backend/
 │   ├── app/
 │   │   ├── api/v1/             # Endpoints: /health, /frameworks, /assessments, /findings, /report.pdf
-│   │   ├── agents/             # 7 Specialized AI Agents + Pluggable LLM interface
+│   │   ├── agents/             # Gemma 4 Supervisor, MultiAgentOrchestrator, 7 Specialist Agents, State
 │   │   ├── engine/             # AST Scanner, Config Analyzer, Scoring Engine, Crosswalk Mapper
-│   │   ├── models/             # SQLAlchemy ORM models (SQLite & PostgreSQL compatible)
+│   │   ├── models/             # SQLAlchemy ORM models (agent execution log & supervisor iterations)
 │   │   ├── schemas/            # Pydantic v2 schemas
 │   │   └── utils/              # Zip-slip protected safe extraction, ReportLab PDF generator
-│   ├── tests/                  # 11 automated pytest suites
+│   ├── tests/                  # 15 automated pytest suites (including multi-agent supervisor tests)
 │   ├── Dockerfile              # Backend container definition
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
 │   │   ├── api/                # Type-safe Axios API client
-│   │   ├── components/         # SeverityBadge, ControlStatusBadge, RiskScoreGauge, Timeline, Modal
+│   │   ├── components/         # AgentExecutionTrace, PipelineTimeline, SeverityBadge, RiskScoreGauge, Modal
 │   │   ├── pages/              # Dashboard, NewAssessment, AssessmentDetails, Findings, Compliance, Reports
-│   │   └── types/              # TypeScript interfaces
+│   │   └── types/              # TypeScript interfaces (SupervisorDecision, AgentExecutionRecord)
 │   ├── Dockerfile              # Multi-stage Nginx container
 │   └── package.json            # React 19, Vite, Tailwind CSS v4, React Router, Recharts
 ├── compliance-rules/           # Versioned JSON control catalogs and crosswalk mappings
@@ -128,12 +134,17 @@ docker compose up --build
 
 ## 5. Running Automated Tests
 
-Run the test suite to verify AST scanners, upload security (Zip Slip defense), deterministic scoring, compliance mapping, and PDF report generation:
+Run the full automated test suite to verify the autonomous Gemma 4 multi-agent supervisor, confirmed finding flows, bounded feedback loops, termination limits, tool allowlists, AST scanners, upload security, and PDF report generation:
 
 ```powershell
 cd "d:\ai powered risk analysis report generation platform\backend"
 .\.venv\Scripts\Activate.ps1
+
+# Run all 15 tests
 pytest -v
+
+# Run dedicated multi-agent autonomous supervisor tests
+pytest app/tests/test_multi_agent_supervisor.py -v
 ```
 
 To run frontend production bundle verification:
@@ -150,30 +161,42 @@ The workspace includes benign static sample projects in `sample-projects/`:
 
 1. **Insecure RAG Agent (`sample-projects/insecure-rag-agent/`):**
    - Contains direct prompt injection via f-strings, `eval()` output execution, hardcoded dummy key, unconstrained subprocess tool, and pickle loading.
-   - Run assessment via the UI or API: yields **CRITICAL** risk score (>= 75/100) and multiple controls marked as `MISSING_WITH_EVIDENCE`.
+   - Run assessment via the UI or API: triggers autonomous detection, evidence validation loop, yields **CRITICAL** risk score (>= 75/100), and records the Gemma 4 supervisor decision trail.
 2. **Secure RAG Agent (`sample-projects/secure-rag-agent/`):**
    - Implements role-isolated prompt templates, Pydantic schema validation, environment variables for secrets, command whitelisting, and safe JSON serialization.
    - Run assessment via the UI: yields **0.0 / 100** risk score and **0 vulnerabilities**.
 
 ---
 
-## 7. Optional LLM Configuration
+## 7. Gemma 4 Model Configuration
 
-The platform works **100% out-of-the-box in deterministic fallback mode** without API keys. To enable optional LLM-assisted narrative explanations:
+The platform operates **100% out-of-the-box with safety guardrails** without requiring API keys. To connect the autonomous supervisor to Gemma 4:
 
 Edit `backend/.env`:
+
+### Option A: Google AI Studio (Official Gemma 4 Endpoint)
 ```env
-# For Local Ollama:
+LLM_PROVIDER=google-ai-studio
+GEMMA_MODEL=gemma-4-12b-it
+GEMMA_API_KEY=AIzaSy...
+```
+
+### Option B: Local Ollama (Local Gemma 4 Runtime)
+```env
 LLM_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2
-
-# Or for OpenAI-compatible endpoint:
-LLM_PROVIDER=openai-compatible
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini
+OLLAMA_MODEL=gemma-4
 ```
-*Note: In accordance with the system specification, LLM outputs only enhance narrative explanations; authoritative risk scores, evidence locations, and control status determinations remain strictly in deterministic logic.*
+
+### Option C: OpenAI-Compatible Server (vLLM / LM Studio / OpenRouter serving Gemma 4)
+```env
+LLM_PROVIDER=openai-compatible
+OPENAI_BASE_URL=http://localhost:8000/v1
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gemma-4-12b-it
+```
+
+*Note: Gemma 4 autonomously controls agent routing, additional investigation loops, and report generation. Authoritative risk scores, evidence snippet extraction, and compliance control status determinations are verified through deterministic ground-truth engines.*
 
 ---
 
