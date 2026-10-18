@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import engine, Base, ensure_assessment_tracking_columns
 from app.api.v1.assessments import router as assessments_router
@@ -18,15 +17,6 @@ app = FastAPI(
     description="Independent academic GenAI security risk assessment & compliance mapping platform.",
     docs_url="/docs",
     redoc_url="/redoc"
-)
-
-# CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_allowed_origins,
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 # Health endpoint

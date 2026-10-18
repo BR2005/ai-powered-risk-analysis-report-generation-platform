@@ -136,10 +136,9 @@ Copy the root `.env.example` to `.env` and set a unique database password before
 
 ```env
 POSTGRES_PASSWORD=replace_with_a_long_url_safe_random_secret
-CORS_ALLOWED_ORIGINS=https://your-frontend-domain.example
 ```
 
-Assessment, finding, and report APIs do not require authentication. Anyone who can reach the backend can view, create, or modify assessment data. Keep deployments on a trusted network or put an authenticated access-control layer (for example, an identity-aware reverse proxy) in front of the backend before exposing it publicly. CORS is not authentication and does not prevent non-browser clients from calling the API.
+Assessment, finding, and report APIs do not require authentication. Anyone who can reach the backend can view, create, or modify assessment data. Keep deployments on a trusted network or put an authenticated access-control layer (for example, an identity-aware reverse proxy) in front of the backend before exposing it publicly.
 
 To launch the full stack (FastAPI Backend, React Nginx Frontend, and PostgreSQL with pgvector):
 
@@ -154,7 +153,7 @@ docker compose up --build
 
 ### Deploying the frontend separately (for example, Vercel)
 
-Set the Vercel build environment variable `VITE_API_BASE_URL` to the public HTTPS origin of the deployed backend, for example `https://api.example.com` (no trailing slash). Configure the backend's `CORS_ALLOWED_ORIGINS` to include the exact frontend origin, such as `https://your-app.vercel.app`, then redeploy the frontend so Vite builds with the API URL. CORS only controls browser-origin access; it does not authenticate users. Do not expose this unauthenticated API to the public internet without an authenticated gateway or equivalent access controls.
+Set the Vercel build environment variable `VITE_API_BASE_URL` to the public HTTPS origin of the deployed backend, for example `https://api.example.com` (no trailing slash), then redeploy the frontend so Vite builds with the API URL. The backend no longer sends cross-origin permission headers, so browsers will block frontend-to-backend requests when those services use different origins. Host the frontend and backend on the same origin (for example, through a reverse proxy) if browser access is needed. Do not expose this unauthenticated API publicly without an authenticated gateway or equivalent access controls.
 
 ---
 

@@ -48,14 +48,6 @@ class Settings(BaseModel):
     # Database
     database_url: str = _resolve_database_url()
 
-    cors_allowed_origins: list[str] = [
-        origin.strip()
-        for origin in os.getenv(
-            "CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
-        ).split(",")
-        if origin.strip()
-    ]
-    
     # File limits
     max_upload_size_bytes: int = 25 * 1024 * 1024  # 25 MB
     max_extracted_files: int = 500
