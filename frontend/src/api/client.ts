@@ -7,7 +7,13 @@ import type {
   HealthStatus 
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const API_BASE_URL = (
+  configuredApiBaseUrl ||
+  (import.meta.env.PROD ? 'https://ai-powered-risk-analysis-report.onrender.com' : '')
+)
+  .replace(/\/api\/v1\/?$/, '')
+  .replace(/\/+$/, '');
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

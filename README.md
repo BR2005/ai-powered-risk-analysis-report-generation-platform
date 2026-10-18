@@ -153,7 +153,7 @@ docker compose up --build
 
 ### Deploying the frontend separately (for example, Vercel)
 
-Set the Vercel build environment variable `VITE_API_BASE_URL` to the public HTTPS origin of the deployed backend, for example `https://api.example.com` (no trailing slash), then redeploy the frontend so Vite builds with the API URL. The backend no longer sends cross-origin permission headers, so browsers will block frontend-to-backend requests when those services use different origins. Host the frontend and backend on the same origin (for example, through a reverse proxy) if browser access is needed. Do not expose this unauthenticated API publicly without an authenticated gateway or equivalent access controls.
+Set the Vercel build environment variable `VITE_API_BASE_URL` to the backend origin `https://ai-powered-risk-analysis-report.onrender.com` (no trailing slash). The production bundle uses this URL by default; setting it explicitly in Vercel makes the deployment configuration clear. On Render, set `CORS_ALLOWED_ORIGINS` to the comma-separated list `https://ai-powered-risk-analysis-report-generation-platform-6nhs2ch2j.vercel.app,http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000`. CORS is restricted to these origins and does not enable credentials. The browser uses `/health` and `/api/v1/...` paths against the backend origin; do not append `/api/v1` to `VITE_API_BASE_URL`.
 
 ---
 
