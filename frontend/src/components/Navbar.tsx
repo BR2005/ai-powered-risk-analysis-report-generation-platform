@@ -22,7 +22,7 @@ export const Navbar: React.FC = () => {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-base tracking-tight text-white font-sans">AegisAI</span>
+            <span className="font-extrabold text-base tracking-tight text-white font-sans">Lucifer</span>
             <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/50">
               GenAI Security
             </span>

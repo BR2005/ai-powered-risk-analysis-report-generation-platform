@@ -1,4 +1,4 @@
-# AegisAI: AI-Powered GenAI Security Risk & Compliance Assessment Platform
+# Lucifer: AI-Powered GenAI Security Risk & Compliance Assessment Platform
 
 > **Academic Disclaimer:** This platform is an independent academic implementation inspired by the mapping concept of the **OWASP GenAI Security Project Crosswalk**. It does not claim official OWASP, NIST, ISO, or European Union affiliation, endorsement, or certification. Generated risk reports and compliance matrices serve as technical audit assistance aids, not substitutes for qualified legal counsel or formal security certification.
 
@@ -6,7 +6,7 @@
 
 ## 1. Project Overview
 
-**AegisAI** is a full-stack, modular cybersecurity platform that accepts a GenAI application's source code (ZIP archive, Python/JS/TS files), architecture configuration, or documentation and performs automated, evidence-grounded security risk and compliance gap analysis.
+**Lucifer** is a full-stack, modular cybersecurity platform that accepts a GenAI application's source code (ZIP archive, Python/JS/TS files), architecture configuration, or documentation and performs automated, evidence-grounded security risk and compliance gap analysis.
 
 ### Core Capabilities
 - **Gemma 4 Autonomous Multi-Agent Supervision:**

@@ -9,7 +9,7 @@ UPLOAD_DIR = BASE_DIR / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 class Settings(BaseModel):
-    app_name: str = "AI-Powered GenAI Security Risk & Compliance Platform"
+    app_name: str = "Lucifer: AI-Powered GenAI Security Risk & Compliance Platform"
     app_version: str = "1.0.0"
     api_v1_prefix: str = "/api/v1"
     
