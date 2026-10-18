@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  Bot, 
-  Sparkles, 
-  Radar, 
-  ShieldAlert, 
-  FileCheck2, 
-  Scale, 
-  Layers, 
-  Wrench, 
-  FileText, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Bot,
+  Sparkles,
+  Radar,
+  ShieldAlert,
+  FileCheck2,
+  Scale,
+  Layers,
+  Wrench,
+  FileText,
+  CheckCircle2,
+  Clock,
   RotateCcw,
   ChevronDown,
   ChevronUp,
@@ -170,22 +170,22 @@ export const AgentExecutionTrace: React.FC<Props> = ({ executionLog = [], superv
             const isExpanded = expandedIndex === idx;
 
             return (
-              <div 
+              <div
                 key={idx}
                 className={`relative glass-panel rounded-xl border transition-all ${
-                  isFinish 
-                    ? 'border-emerald-500/40 bg-emerald-950/10' 
-                    : decision.needs_extra_security_check 
+                  isFinish
+                    ? 'border-emerald-500/40 bg-emerald-950/10'
+                    : decision.needs_extra_security_check
                       ? 'border-amber-500/40 bg-amber-950/10'
                       : 'border-slate-800 hover:border-slate-700'
                 }`}
               >
                 {/* Node icon along left timeline */}
-                <div 
+                <div
                   className={`absolute -left-[31px] top-4 w-5 h-5 rounded-full border flex items-center justify-center bg-slate-950 text-[10px] font-mono font-bold ${
-                    isFinish 
-                      ? 'border-emerald-500 text-emerald-400 ring-4 ring-emerald-950/60' 
-                      : decision.needs_extra_security_check 
+                    isFinish
+                      ? 'border-emerald-500 text-emerald-400 ring-4 ring-emerald-950/60'
+                      : decision.needs_extra_security_check
                         ? 'border-amber-400 text-amber-300 ring-4 ring-amber-950/60'
                         : 'border-cyan-500 text-cyan-300 ring-4 ring-cyan-950/60'
                   }`}

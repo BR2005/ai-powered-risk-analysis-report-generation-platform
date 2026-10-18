@@ -85,7 +85,7 @@ async def test_additional_investigation_loop_scenario():
     orchestrator = MultiAgentOrchestrator()
 
     # Sequence of decisions simulating Gemma 4 directing workflow with a loop:
-    # 1. recon -> 2. security -> 3. evidence -> 4. loop back to evidence for deeper check -> 5. risk -> 6. compliance -> 7. remediation -> 8. report
+    # 1. recon -> 2. security -> 3. evidence -> 4. loop back to evidence -> 5. risk -> 6. report -> 7. FINISH
     model_responses = [
         json.dumps({"next_agent": "recon", "reason": "Analyze architecture first.", "needs_extra_security_check": False}),
         json.dumps({"next_agent": "security", "reason": "Run AST scan.", "needs_extra_security_check": False}),
@@ -93,8 +93,6 @@ async def test_additional_investigation_loop_scenario():
         # Gemma 4 notices findings need extra verification loop:
         json.dumps({"next_agent": "evidence", "reason": "Critical findings require secondary evidence check.", "needs_extra_security_check": True}),
         json.dumps({"next_agent": "risk", "reason": "Score risks.", "needs_extra_security_check": False}),
-        json.dumps({"next_agent": "compliance", "reason": "Map controls.", "needs_extra_security_check": False}),
-        json.dumps({"next_agent": "remediation", "reason": "Generate roadmaps.", "needs_extra_security_check": False}),
         json.dumps({"next_agent": "report", "reason": "Synthesize report.", "needs_extra_security_check": False}),
         json.dumps({"next_agent": "FINISH", "reason": "All tasks completed.", "needs_extra_security_check": False}),
     ]
@@ -117,7 +115,7 @@ async def test_additional_investigation_loop_scenario():
 
         exec_log = results["agent_execution_log"]
         evidence_runs = [e for e in exec_log if e["agent_name"] == "evidence"]
-        
+
         # Verify evidence agent executed twice due to Gemma 4 routing decision
         assert len(evidence_runs) >= 2
         # Check that the second run has the extra security check reason
@@ -133,7 +131,7 @@ async def test_termination_scenario_iteration_limit():
     with 'FINISH' and persist all state and logs.
     """
     supervisor = Gemma4Supervisor()
-    
+
     # State already at MAX_SUPERVISOR_ITERATIONS
     state = SharedAssessmentState(
         project_name="Limit Test",

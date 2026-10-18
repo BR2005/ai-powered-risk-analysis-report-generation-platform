@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-  Radar, 
-  ShieldAlert, 
-  FileCheck2, 
-  Scale, 
-  Layers, 
-  Wrench, 
-  FileText, 
-  CheckCircle2, 
+import {
+  Radar,
+  ShieldAlert,
+  FileCheck2,
+  Scale,
+  Layers,
+  Wrench,
+  FileText,
+  CheckCircle2,
   Loader2,
   Bot,
   RotateCcw
@@ -20,10 +20,10 @@ interface Props {
   supervisorIterations?: number;
 }
 
-export const PipelineTimeline: React.FC<Props> = ({ 
-  currentStatus, 
-  agentExecutionLog = [], 
-  supervisorIterations 
+export const PipelineTimeline: React.FC<Props> = ({
+  currentStatus,
+  agentExecutionLog = [],
+  supervisorIterations
 }) => {
   const stages = [
     { id: 1, key: 'recon', name: 'Reconnaissance', icon: Radar, desc: 'Architecture & Trust Boundaries' },

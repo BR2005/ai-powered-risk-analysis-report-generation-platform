@@ -36,6 +36,7 @@ from app.agents.remediation import RemediationAgent
 from app.agents.reporter import ReportGenerationAgent
 from app.agents.supervisor import gemma4_supervisor, MAX_SUPERVISOR_ITERATIONS
 from app.agents.state import SharedAssessmentState
+from app.engine.scanner import ScanFinding
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +81,7 @@ class MultiAgentOrchestrator:
         architecture_text: str | None,
         workspace_dir: Path | None,
         target_frameworks: list[str],
+        assessment_id: str | None = None,
     ) -> dict[str, Any]:
         """
         Run the full autonomous multi-agent assessment pipeline.
@@ -88,6 +90,7 @@ class MultiAgentOrchestrator:
         """
         state = SharedAssessmentState(
             project_name=project_name,
+            assessment_id=assessment_id,
             architecture_text=architecture_text,
             workspace_dir=workspace_dir,
             target_frameworks=target_frameworks,
@@ -110,16 +113,46 @@ class MultiAgentOrchestrator:
             )
 
             if next_agent == "FINISH":
-                # Persist the FINISH decision in the log
-                state.execution_log.append(
-                    _make_finish_record(decision.to_dict(), state.supervisor_iterations)
+                missing_required_agents = [
+                    agent
+                    for agent in ("recon", "security", "risk", "report")
+                    if agent not in state.completed_agents
+                ]
+                if missing_required_agents:
+                    if state.supervisor_iterations >= MAX_SUPERVISOR_ITERATIONS:
+                        raise RuntimeError(
+                            "Supervisor reached the iteration limit before required "
+                            f"agents completed: {', '.join(missing_required_agents)}."
+                        )
+                    next_agent = missing_required_agents[0]
+                    decision.next_agent = next_agent
+                    decision.reason = (
+                        "FINISH was deferred because required agents had not completed; "
+                        f"running {next_agent}."
+                    )
+                    logger.warning(
+                        "Deferring FINISH; required agent(s) still pending: %s",
+                        ", ".join(missing_required_agents),
+                    )
+                else:
+                    state.execution_log.append(
+                        _make_finish_record(decision.to_dict(), state.supervisor_iterations)
+                    )
+                    break
+
+            if (
+                state.supervisor_iterations >= MAX_SUPERVISOR_ITERATIONS
+                and next_agent != "FINISH"
+            ):
+                raise RuntimeError(
+                    "Supervisor iteration limit reached before the pipeline could finish."
                 )
-                break
 
             # ── Safety Allowlist Enforcement ─────────────────────────────────
             if next_agent not in ALLOWED_AGENT_TOOLS:
-                logger.error("Supervisor attempted to dispatch unapproved agent '%s'. Dropping.", next_agent)
-                continue
+                raise RuntimeError(
+                    f"Supervisor attempted to dispatch unapproved agent '{next_agent}'."
+                )
 
             # ── Dispatch to the selected agent ────────────────────────────────
             started_at = datetime.now(timezone.utc)
@@ -137,6 +170,11 @@ class MultiAgentOrchestrator:
                 started_at=started_at,
                 supervisor_decision=decision_dict,
                 output_summary=output_summary,
+            )
+
+        else:
+            raise RuntimeError(
+                "Supervisor iteration limit reached before the pipeline could finish."
             )
 
         logger.info(
@@ -165,22 +203,31 @@ class MultiAgentOrchestrator:
                 workspace_dir=state.workspace_dir
             )
             # Merge new findings (de-duplicate by key)
-            existing_keys = {
-                f"{f.file_path}:{f.line_start}:{f.category}:{f.title}"
-                for f in state.findings
-            }
+            existing_keys = {_finding_key(finding) for finding in state.findings}
             for f in raw_findings:
-                key = f"{f.file_path}:{f.line_start}:{f.category}:{f.title}"
+                key = _finding_key(f)
                 if key not in existing_keys:
                     state.findings.append(f)
                     existing_keys.add(key)
             return f"Security scan complete: {len(raw_findings)} raw finding(s) detected."
 
         elif agent_name == "evidence":
-            state.findings = await self.evidence_agent.execute(
+            validated_findings = await self.evidence_agent.execute(
                 findings=state.findings,
                 workspace_dir=state.workspace_dir,
             )
+            existing_indices = {
+                _finding_key(finding): index
+                for index, finding in enumerate(state.findings)
+            }
+            for finding in validated_findings:
+                key = _finding_key(finding)
+                existing_index = existing_indices.get(key)
+                if existing_index is None:
+                    existing_indices[key] = len(state.findings)
+                    state.findings.append(finding)
+                else:
+                    state.findings[existing_index] = finding
             verified = sum(
                 1 for f in state.findings if f.validation_status == "VERIFIED"
             )
@@ -220,7 +267,7 @@ class MultiAgentOrchestrator:
 
         elif agent_name == "report":
             assessment_summary_dict: dict[str, Any] = {
-                "id": "N/A",
+                "id": state.assessment_id or "N/A",
                 "project_name": state.project_name,
             }
             control_mappings = (
@@ -268,6 +315,10 @@ def _make_finish_record(decision_dict: dict[str, Any], iteration: int):
         supervisor_decision=decision_dict,
         output_summary="Supervisor terminated workflow.",
     )
+
+
+def _finding_key(finding: ScanFinding) -> str:
+    return f"{finding.file_path}:{finding.line_start}:{finding.category}:{finding.title}"
 
 
 # ─── Module-level singleton (replaces old orchestrator singleton) ──────────────
@@ -325,5 +376,5 @@ if __name__ == "__main__":
         print(f"Supervisor Total   : {results.get('supervisor_iterations', 0)} iterations")
         print(f"Remediation Steps  : {len(results.get('remediation_roadmap', []))}")
         print("=" * 75)
-
+    asyncio.run(main())
     asyncio.run(main())

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Download, 
-  FileCode, 
-  Layers, 
-  ShieldAlert, 
-  Wrench, 
-  CheckCircle2, 
-  FileText, 
+import {
+  ArrowLeft,
+  Download,
+  FileCode,
+  Layers,
+  ShieldAlert,
+  Wrench,
+  CheckCircle2,
+  FileText,
   ExternalLink,
   Code,
   Bot
@@ -112,8 +112,8 @@ export const AssessmentDetails: React.FC = () => {
 
       {/* Pipeline Status Banner */}
       <div className="glass-panel rounded-2xl p-4 border border-slate-800">
-        <PipelineTimeline 
-          currentStatus={assessment.status} 
+        <PipelineTimeline
+          currentStatus={assessment.status}
           agentExecutionLog={assessment.agent_execution_log}
           supervisorIterations={assessment.supervisor_iterations}
         />
@@ -289,9 +289,9 @@ export const AssessmentDetails: React.FC = () => {
 
       {/* Tab: Multi-Agent Trace */}
       {activeTab === 'trace' && (
-        <AgentExecutionTrace 
-          executionLog={assessment.agent_execution_log} 
-          supervisorIterations={assessment.supervisor_iterations} 
+        <AgentExecutionTrace
+          executionLog={assessment.agent_execution_log}
+          supervisorIterations={assessment.supervisor_iterations}
         />
       )}
 

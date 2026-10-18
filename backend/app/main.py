@@ -8,25 +8,30 @@ from app.api.v1.frameworks import router as frameworks_router
 from app.api.v1.findings import router as findings_router
 from app.schemas.assessment import HealthResponse
 
-from sqlalchemy import text
+from sqlalchemy import inspect, text
 
 # Create database tables automatically
 Base.metadata.create_all(bind=engine)
 
-# Auto-migrate SQLite columns if table already existed prior to multi-agent upgrade
-try:
-    with engine.connect() as conn:
-        result = conn.execute(text("PRAGMA table_info(assessments)"))
-        cols = {row[1] for row in result.fetchall()}
-        if cols:
-            if "agent_execution_log" not in cols:
-                conn.execute(text("ALTER TABLE assessments ADD COLUMN agent_execution_log JSON DEFAULT '[]'"))
-                conn.commit()
-            if "supervisor_iterations" not in cols:
-                conn.execute(text("ALTER TABLE assessments ADD COLUMN supervisor_iterations INTEGER DEFAULT 0"))
-                conn.commit()
-except Exception:
-    pass
+# Add workflow columns for databases created before the multi-agent upgrade.
+with engine.begin() as conn:
+    inspector = inspect(conn)
+    if inspector.has_table("assessments"):
+        existing_columns = {
+            column["name"] for column in inspector.get_columns("assessments")
+        }
+        missing_columns = {
+            "agent_execution_log": "JSON DEFAULT '[]'",
+            "supervisor_iterations": "INTEGER DEFAULT 0",
+        }
+        for column_name, column_definition in missing_columns.items():
+            if column_name not in existing_columns:
+                conn.execute(
+                    text(
+                        f"ALTER TABLE assessments ADD COLUMN "
+                        f"{column_name} {column_definition}"
+                    )
+                )
 
 app = FastAPI(
     title=settings.app_name,
