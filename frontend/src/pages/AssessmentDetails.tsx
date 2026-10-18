@@ -13,7 +13,7 @@ import {
   Code,
   Bot
 } from 'lucide-react';
-import { getAssessment, getReportPdfUrl } from '../api/client';
+import { getAssessment, downloadReportPdf } from '../api/client';
 import type { AssessmentDetail, Finding } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
 import { ControlStatusBadge } from '../components/ControlStatusBadge';
@@ -91,15 +91,13 @@ export const AssessmentDetails: React.FC = () => {
 
         {/* Download Buttons */}
         <div className="flex items-center gap-2.5">
-          <a
-            href={getReportPdfUrl(assessment.id)}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            onClick={() => downloadReportPdf(assessment.id).catch(() => window.alert('Could not download the PDF report.'))}
             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold shadow-sm transition-all"
           >
             <Download className="w-4 h-4" />
             <span>Export Audit PDF</span>
-          </a>
+          </button>
           <Link
             to={`/reports?assessment_id=${assessment.id}`}
             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold transition-all"

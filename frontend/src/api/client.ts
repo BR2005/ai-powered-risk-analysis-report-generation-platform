@@ -16,6 +16,25 @@ export const api = axios.create({
   },
 });
 
+api.interceptors.request.use((config) => {
+  const apiKey = sessionStorage.getItem('lucifer_api_key');
+  if (apiKey) {
+    config.headers.set('X-API-Key', apiKey);
+  }
+  return config;
+});
+
+export const authenticateApiKey = async (apiKey: string): Promise<void> => {
+  await api.get('/api/v1/assessments', {
+    headers: { 'X-API-Key': apiKey },
+  });
+  sessionStorage.setItem('lucifer_api_key', apiKey);
+};
+
+export const clearApiKey = (): void => {
+  sessionStorage.removeItem('lucifer_api_key');
+};
+
 export const checkHealth = async (): Promise<HealthStatus> => {
   const { data } = await api.get<HealthStatus>('/health');
   return data;
@@ -70,6 +89,14 @@ export const getReportJson = async (assessmentId: string): Promise<any> => {
   return data;
 };
 
-export const getReportPdfUrl = (assessmentId: string): string => {
-  return `${API_BASE_URL}/api/v1/assessments/${assessmentId}/report.pdf`;
+export const downloadReportPdf = async (assessmentId: string): Promise<void> => {
+  const { data } = await api.get<Blob>(`/api/v1/assessments/${assessmentId}/report.pdf`, {
+    responseType: 'blob',
+  });
+  const url = URL.createObjectURL(data);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `assessment-${assessmentId.slice(0, 8)}.pdf`;
+  link.click();
+  URL.revokeObjectURL(url);
 };

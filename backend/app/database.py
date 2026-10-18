@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.config import settings
 
@@ -22,3 +22,23 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def ensure_assessment_tracking_columns(bind=engine) -> None:
+    """Add the multi-agent tracking columns to databases created by older releases."""
+    inspector = inspect(bind)
+    if not inspector.has_table("assessments"):
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("assessments")}
+    migrations = {
+        "agent_execution_log": "JSON DEFAULT '[]'",
+        "supervisor_iterations": "INTEGER DEFAULT 0",
+    }
+
+    with bind.begin() as connection:
+        for name, definition in migrations.items():
+            if name not in columns:
+                connection.execute(
+                    text(f"ALTER TABLE assessments ADD COLUMN {name} {definition}")
+                )

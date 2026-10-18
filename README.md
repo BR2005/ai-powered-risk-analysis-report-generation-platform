@@ -13,7 +13,7 @@
   - Uses Google DeepMind's configured **Gemma 4** model as the autonomous routing supervisor.
   - Dynamic conditional routing: Gemma 4 inspects real-time assessment findings, severity levels, and evidence verification status to decide which specialist agent runs next instead of following a fixed linear sequence.
   - Bounded feedback loops: The supervisor can request additional security checks or deeper evidence verification passes when high or critical vulnerabilities are discovered.
-  - Safety & Guardrails: Model output validation, strict tool allowlist enforcement (`ALLOWED_AGENT_TOOLS`), prevention of arbitrary code execution, and hard execution caps (`MAX_SUPERVISOR_ITERATIONS = 8`, `MAX_EXTRA_SECURITY_LOOPS = 2`).
+  - Safety & Guardrails: Model output validation, strict tool allowlist enforcement (`ALLOWED_AGENT_TOOLS`), prevention of arbitrary code execution, and hard execution caps (`MAX_SUPERVISOR_ITERATIONS = 10`, `MAX_EXTRA_SECURITY_LOOPS = 2`).
   - Deterministic priority-queue guardrail: Seamlessly steps in if the model is offline or unreachable.
 - **Static Security Analysis:** AST-level and signature-based detection for GenAI risks:
   - Direct and indirect **Prompt Injection** (F-strings, unsanitized concatenation)
@@ -95,11 +95,14 @@ Open a PowerShell terminal:
 # Navigate to backend directory
 cd "d:\ai powered risk analysis report generation platform\backend"
 
+# Copy .env.example to .env and set a unique API_ACCESS_KEY before running.
+# Replace the placeholder model credentials if using a hosted model.
+
 # Activate existing virtual environment
 .\.venv\Scripts\Activate.ps1
 
 # Run the FastAPI server
-uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload --env-file .env
 ```
 The backend API is now live at `http://127.0.0.1:8000`.
 - Health Check: `http://127.0.0.1:8000/health`
@@ -120,6 +123,16 @@ Open your browser to `http://localhost:5173`.
 
 ## 4. Docker Compose Setup
 
+Copy the root `.env.example` to `.env` and replace both secrets before starting the stack:
+
+```env
+API_ACCESS_KEY=replace_with_a_long_random_secret
+POSTGRES_PASSWORD=replace_with_a_long_url_safe_random_secret
+CORS_ALLOWED_ORIGINS=https://your-frontend-domain.example
+```
+
+The key protects assessment, finding, and report endpoints. The frontend prompts for it and retains it only in the current browser tab. This is a shared-key setup: every key holder can access all stored assessments, so use it only for a trusted group and use HTTPS. Framework metadata and the health endpoint remain public.
+
 To launch the full stack (FastAPI Backend, React Nginx Frontend, and PostgreSQL with pgvector):
 
 ```powershell
@@ -127,8 +140,10 @@ To launch the full stack (FastAPI Backend, React Nginx Frontend, and PostgreSQL 
 docker compose up --build
 ```
 - Frontend UI: `http://localhost:3000`
-- Backend API: `http://localhost:8000`
+- Backend API: `http://127.0.0.1:8000` (bound to localhost)
 - Swagger Docs: `http://localhost:8000/docs`
+- Access protected API routes with `X-API-Key: <API_ACCESS_KEY>`.
+- PostgreSQL is available only to services on the internal Docker network.
 
 ---
 
@@ -140,7 +155,7 @@ Run the full automated test suite to verify the autonomous Gemma 4 multi-agent s
 cd "d:\ai powered risk analysis report generation platform\backend"
 .\.venv\Scripts\Activate.ps1
 
-# Run all 15 tests
+# Run all backend tests
 pytest -v
 
 # Run dedicated multi-agent autonomous supervisor tests

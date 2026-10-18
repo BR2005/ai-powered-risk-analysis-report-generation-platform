@@ -13,6 +13,7 @@ from app.agents.supervisor import (
     MAX_EXTRA_SECURITY_LOOPS,
 )
 from app.agents.multi_agent_orchestrator import MultiAgentOrchestrator, ALLOWED_AGENT_TOOLS
+from app.agents.supervisor import gemma4_supervisor
 from app.engine.scanner import ScanFinding
 
 
@@ -178,3 +179,65 @@ async def test_safety_allowlist_and_malformed_model_response():
     assert "system_rmdir" not in ALLOWED_AGENT_TOOLS
     assert "recon" in ALLOWED_AGENT_TOOLS
     assert "security" in ALLOWED_AGENT_TOOLS
+
+
+@pytest.mark.asyncio
+async def test_early_finish_is_replaced_with_required_agent_routes():
+    orchestrator = MultiAgentOrchestrator()
+    orchestrator._dispatch = AsyncMock(return_value="completed")
+
+    with patch.object(
+        gemma4_supervisor,
+        "decide",
+        new=AsyncMock(
+            return_value=SupervisorDecision(
+                "FINISH",
+                "Stop before doing any work.",
+            )
+        ),
+    ):
+        results = await orchestrator.run_pipeline(
+            project_name="Early Finish Guard Test",
+            architecture_text=None,
+            workspace_dir=None,
+            target_frameworks=[],
+        )
+
+    executed_agents = {
+        entry["agent_name"]
+        for entry in results["agent_execution_log"]
+        if entry["agent_name"] != "FINISH"
+    }
+    assert executed_agents == ALLOWED_AGENT_TOOLS
+    assert results["agent_execution_log"][-1]["agent_name"] == "FINISH"
+    assert results["supervisor_iterations"] <= MAX_SUPERVISOR_ITERATIONS
+
+
+@pytest.mark.asyncio
+async def test_early_report_is_rejected_and_duplicate_report_finishes():
+    orchestrator = MultiAgentOrchestrator()
+    orchestrator._dispatch = AsyncMock(return_value="completed")
+
+    with patch.object(
+        gemma4_supervisor,
+        "decide",
+        new=AsyncMock(
+            return_value=SupervisorDecision(
+                "report",
+                "Generate the report before the analysis is complete.",
+            )
+        ),
+    ):
+        results = await orchestrator.run_pipeline(
+            project_name="Early Report Guard Test",
+            architecture_text=None,
+            workspace_dir=None,
+            target_frameworks=[],
+        )
+
+    agent_order = [
+        entry["agent_name"] for entry in results["agent_execution_log"]
+    ]
+    assert agent_order.index("report") > agent_order.index("remediation")
+    assert agent_order[-1] == "FINISH"
+    assert results["supervisor_iterations"] <= MAX_SUPERVISOR_ITERATIONS

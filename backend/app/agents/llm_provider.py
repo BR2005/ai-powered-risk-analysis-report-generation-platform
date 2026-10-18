@@ -23,7 +23,7 @@ class LLMProvider:
             api_key = settings.gemma_api_key
             if api_key:
                 try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemma_model}:generateContent?key={api_key}"
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemma_model}:generateContent"
                     payload = {
                         "contents": [
                             {
@@ -38,7 +38,11 @@ class LLMProvider:
                     }
                     timeout = httpx.Timeout(20.0, connect=2.5)
                     async with httpx.AsyncClient(timeout=timeout) as client:
-                        resp = await client.post(url, json=payload)
+                        resp = await client.post(
+                            url,
+                            headers={"x-goog-api-key": api_key},
+                            json=payload,
+                        )
                         if resp.status_code == 200:
                             data = resp.json()
                             candidates = data.get("candidates", [])
@@ -47,9 +51,15 @@ class LLMProvider:
                                 if text_parts:
                                     return text_parts[0].get("text", "").strip()
                         else:
-                            logger.warning(f"Gemma 4 API responded with status {resp.status_code}: {resp.text}")
+                            logger.warning(
+                                "Gemma 4 API responded with status %d.",
+                                resp.status_code,
+                            )
                 except Exception as e:
-                    logger.warning(f"Gemma 4 API request error: {e}. Using deterministic engine.")
+                    logger.warning(
+                        "Gemma 4 API request failed (%s). Using deterministic engine.",
+                        type(e).__name__,
+                    )
 
             # If Ollama is running Gemma 4 locally as secondary check
             return await self._call_ollama(system_prompt, user_prompt)
@@ -81,7 +91,10 @@ class LLMProvider:
                         data = resp.json()
                         return data["choices"][0]["message"]["content"].strip()
             except Exception as e:
-                logger.warning(f"OpenAI endpoint request for Gemma 4 failed: {e}.")
+                logger.warning(
+                    "OpenAI endpoint request for Gemma 4 failed (%s).",
+                    type(e).__name__,
+                )
 
         return None
 
@@ -100,7 +113,7 @@ class LLMProvider:
                 if resp.status_code == 200:
                     return resp.json().get("response", "").strip()
         except Exception as e:
-            logger.debug(f"Ollama local Gemma 4 check: {e}")
+            logger.debug("Ollama local Gemma 4 request failed (%s).", type(e).__name__)
         return None
 
 llm_provider = LLMProvider()

@@ -30,7 +30,7 @@ ALLOWED_AGENTS: set[str] = {
 }
 
 # Hard cap on how many times the supervisor may loop back
-MAX_SUPERVISOR_ITERATIONS = 8
+MAX_SUPERVISOR_ITERATIONS = 10
 MAX_EXTRA_SECURITY_LOOPS = 2
 
 SYSTEM_PROMPT = """You are the Gemma 4 Multi-Agent Security Supervisor for an AI-Powered GenAI Security
@@ -207,6 +207,7 @@ class Gemma4Supervisor:
 
         next_agent = str(data.get("next_agent", "")).strip()
         reason = str(data.get("reason", "Model routing decision.")).strip()
+        reason = "".join(char for char in reason if char.isprintable())[:500]
         needs_extra = bool(data.get("needs_extra_security_check", False))
 
         # Safety: enforce allowlist

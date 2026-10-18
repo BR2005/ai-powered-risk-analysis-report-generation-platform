@@ -7,7 +7,7 @@ import {
   ArrowUpRight, 
   Download 
 } from 'lucide-react';
-import { listAssessments, getReportPdfUrl } from '../api/client';
+import { listAssessments, downloadReportPdf } from '../api/client';
 import type { AssessmentSummary } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
 
@@ -128,15 +128,13 @@ export const AssessmentsList: React.FC = () => {
 
               {/* Footer Links */}
               <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs font-medium">
-                <a
-                  href={getReportPdfUrl(a.id)}
-                  target="_blank"
-                  rel="noreferrer"
+                <button
+                  onClick={() => downloadReportPdf(a.id).catch(() => window.alert('Could not download the PDF report.'))}
                   className="text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>PDF Audit</span>
-                </a>
+                </button>
 
                 <Link
                   to={`/assessments/${a.id}`}

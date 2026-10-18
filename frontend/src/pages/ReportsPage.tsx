@@ -8,7 +8,7 @@ import {
   Check, 
   ArrowRight
 } from 'lucide-react';
-import { listAssessments, getReportJson, getReportPdfUrl } from '../api/client';
+import { listAssessments, getReportJson, downloadReportPdf } from '../api/client';
 import type { AssessmentSummary } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
 
@@ -132,15 +132,13 @@ export const ReportsPage: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <a
-                      href={getReportPdfUrl(selectedAssessment.id)}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
+                      onClick={() => downloadReportPdf(selectedAssessment.id).catch(() => window.alert('Could not download the PDF report.'))}
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-xs font-bold shadow-sm transition-all"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download PDF</span>
-                    </a>
+                    </button>
                     <button
                       onClick={handleCopyJson}
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 text-slate-300 text-xs font-semibold transition-colors cursor-pointer"

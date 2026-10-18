@@ -131,7 +131,7 @@ export const AgentExecutionTrace: React.FC<Props> = ({ executionLog = [], superv
             <div>
               <span className="text-slate-400 text-[10px] uppercase block">Iterations</span>
               <span className="text-sm font-bold text-cyan-400">
-                {supervisorIterations || executionLog.length} / 8 Max
+                {supervisorIterations || executionLog.length} / 10 Max
               </span>
             </div>
             <div>

@@ -34,7 +34,11 @@ from app.agents.risk import RiskAssessmentAgent
 from app.agents.compliance import ComplianceMappingAgent
 from app.agents.remediation import RemediationAgent
 from app.agents.reporter import ReportGenerationAgent
-from app.agents.supervisor import gemma4_supervisor, MAX_SUPERVISOR_ITERATIONS
+from app.agents.supervisor import (
+    SupervisorDecision,
+    gemma4_supervisor,
+    MAX_SUPERVISOR_ITERATIONS,
+)
 from app.agents.state import SharedAssessmentState
 
 logger = logging.getLogger(__name__)
@@ -102,19 +106,72 @@ class MultiAgentOrchestrator:
             decision = await gemma4_supervisor.decide(state)
             next_agent = decision.next_agent
 
+            remaining_agents = ALLOWED_AGENT_TOOLS - state.completed_agents
+            if next_agent == "report" and remaining_agents - {"report"}:
+                logger.warning(
+                    "Supervisor requested report before all assessment stages completed; "
+                    "using the application fallback route."
+                )
+                decision = gemma4_supervisor._fallback_decision(state)
+                next_agent = decision.next_agent
+
+            if next_agent == "report" and next_agent in state.completed_agents:
+                decision = SupervisorDecision(
+                    "FINISH",
+                    "The report stage is already complete.",
+                    source="application_guardrail",
+                )
+                next_agent = decision.next_agent
+            elif (
+                next_agent in state.completed_agents
+                and next_agent not in ("security", "evidence")
+            ):
+                logger.warning(
+                    "Supervisor requested a repeated non-investigation stage; "
+                    "using the application fallback route."
+                )
+                decision = gemma4_supervisor._fallback_decision(state)
+                next_agent = decision.next_agent
+
+            remaining_after_decision = len(
+                remaining_agents - ({next_agent} if next_agent in remaining_agents else set())
+            )
+            finish_reserve = 1 if next_agent != "FINISH" else 0
+            if (
+                next_agent != "FINISH"
+                and state.supervisor_iterations + remaining_after_decision + finish_reserve
+                > MAX_SUPERVISOR_ITERATIONS
+            ):
+                logger.warning(
+                    "Supervisor decision exceeds remaining workflow budget; "
+                    "using the application fallback route."
+                )
+                decision = gemma4_supervisor._fallback_decision(state)
+                next_agent = decision.next_agent
+
             logger.info(
                 "[Iter %d] Supervisor→ %s | %s",
                 state.supervisor_iterations,
                 next_agent,
-                decision.reason,
+                decision.reason[:500],
             )
 
             if next_agent == "FINISH":
-                # Persist the FINISH decision in the log
-                state.execution_log.append(
-                    _make_finish_record(decision.to_dict(), state.supervisor_iterations)
-                )
-                break
+                if not ALLOWED_AGENT_TOOLS.issubset(state.completed_agents):
+                    logger.warning(
+                        "Supervisor requested FINISH before all required agents completed; "
+                        "using the application fallback route."
+                    )
+                    decision = gemma4_supervisor._fallback_decision(state)
+                    next_agent = decision.next_agent
+                else:
+                    # Persist the FINISH decision in the log.
+                    state.execution_log.append(
+                        _make_finish_record(
+                            decision.to_dict(), state.supervisor_iterations
+                        )
+                    )
+                    break
 
             # ── Safety Allowlist Enforcement ─────────────────────────────────
             if next_agent not in ALLOWED_AGENT_TOOLS:
@@ -137,6 +194,11 @@ class MultiAgentOrchestrator:
                 started_at=started_at,
                 supervisor_decision=decision_dict,
                 output_summary=output_summary,
+            )
+
+        if not ALLOWED_AGENT_TOOLS.issubset(state.completed_agents):
+            raise RuntimeError(
+                "Supervisor iteration limit reached before all required agents completed."
             )
 
         logger.info(

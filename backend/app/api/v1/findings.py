@@ -3,8 +3,13 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.assessment import Finding
 from app.schemas.assessment import FindingResponse
+from app.security import require_api_key
 
-router = APIRouter(prefix="/findings", tags=["Findings"])
+router = APIRouter(
+    prefix="/findings",
+    tags=["Findings"],
+    dependencies=[Depends(require_api_key)],
+)
 
 @router.get("", response_model=list[FindingResponse])
 def get_findings(
