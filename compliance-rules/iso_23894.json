@@ -1,0 +1,38 @@
+{
+  "framework_id": "ISO-23894",
+  "name": "ISO/IEC 23894:2023 AI Risk Management Guidance",
+  "version": "2023",
+  "publisher": "International Organization for Standardization (ISO)",
+  "publication_date": "2023-02-01",
+  "source_url": "https://www.iso.org/standard/77304.html",
+  "disclaimer": "Academic reference and mapping crosswalk for ISO/IEC 23894 risk management guidelines. Not an official ISO conformity assessment.",
+  "controls": [
+    {
+      "control_id": "ISO23894-6.3",
+      "title": "AI Risk Identification and Threat Modeling",
+      "category": "Risk Assessment",
+      "description": "Systematically identify risks specific to AI, including prompt injection, model degradation, training contamination, and excessive autonomy.",
+      "reference_url": "https://www.iso.org/standard/77304.html",
+      "verification_guidance": "Check for threat modeling artifacts identifying GenAI assets, trust boundaries, agent permissions, and threat vectors.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "ISO23894-7.2",
+      "title": "AI Risk Treatment and Technical Guardrails",
+      "category": "Risk Treatment",
+      "description": "Implement technical and operational controls to mitigate identified AI risks to an acceptable level.",
+      "reference_url": "https://www.iso.org/standard/77304.html",
+      "verification_guidance": "Examine implementation of input filters, output validators, rate limits, and least-privilege tool execution.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "ISO23894-8.1",
+      "title": "Continuous Monitoring and Feedback Loops",
+      "category": "Monitoring",
+      "description": "Continuously monitor AI system outputs, operational metrics, and user feedback to detect drift or emerging security vulnerabilities.",
+      "reference_url": "https://www.iso.org/standard/77304.html",
+      "verification_guidance": "Verify runtime logging of prompt execution times, hallucination rate telemetry, and feedback capture mechanisms.",
+      "is_conceptual_mapping": false
+    }
+  ]
+}

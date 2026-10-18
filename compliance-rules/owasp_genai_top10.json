@@ -1,0 +1,101 @@
+{
+  "framework_id": "OWASP-GENAI",
+  "name": "OWASP Top 10 for Large Language Model Applications",
+  "version": "2025 (v1.1-aligned)",
+  "publisher": "OWASP GenAI Security Project (Independent Academic Reference)",
+  "publication_date": "2023-10-15 (updated 2024)",
+  "source_url": "https://genai.owasp.org/llm-top-10/",
+  "disclaimer": "This is an independent academic implementation inspired by the mapping concept of the OWASP GenAI Security Project Crosswalk. No official OWASP affiliation, endorsement, or certification is claimed.",
+  "controls": [
+    {
+      "control_id": "LLM01",
+      "title": "Prompt Injection",
+      "category": "Input Handling",
+      "description": "Manipulating LLM behavior through crafted user inputs directly concatenated into prompts or indirect injection via external untrusted data sources (web, documents, emails).",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "verification_guidance": "Check for parameterized prompts, system-user prompt isolation, input validation, guardrail classifiers, and separation of external untrusted content.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM02",
+      "title": "Sensitive Information Disclosure",
+      "category": "Data Protection",
+      "description": "LLM outputs or logs revealing proprietary algorithms, PII, intellectual property, credentials, or internal system configurations to unauthorized users.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm02-sensitive-information-disclosure/",
+      "verification_guidance": "Check for output scrubbing/redaction, strict access controls on context data, DLP scanning on prompts/responses, and absence of hardcoded API keys/secrets.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM03",
+      "title": "Supply Chain Vulnerabilities",
+      "category": "Supply Chain",
+      "description": "Risks from third-party pre-trained models, vulnerable plugins, third-party datasets, tampered model weights, or vulnerable AI SDK dependencies.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm03-supply-chain-vulnerabilities/",
+      "verification_guidance": "Verify cryptographic hashes on model weights, use of trusted registries, software bill of materials (SBOM), safe serialization formats (safetensors instead of pickle), and pinned dependencies.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM04",
+      "title": "Data and Model Poisoning",
+      "category": "Data Governance",
+      "description": "Manipulation of training data or fine-tuning datasets to introduce backdoors, biases, vulnerabilities, or ethical bypasses into the model.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm04-data-and-model-poisoning/",
+      "verification_guidance": "Check training dataset integrity, anomaly detection on ingested RAG data, data provenance tracking, and role-based training pipelines.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM05",
+      "title": "Insecure Output Handling",
+      "category": "Output Handling",
+      "description": "Neglecting to validate or sanitize LLM outputs before feeding them into downstream components (e.g., eval(), SQL queries, system shells, or innerHTML).",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm05-insecure-output-handling/",
+      "verification_guidance": "Verify that downstream sinks treat LLM output as untrusted user input, employing parameterized queries, strict schema validation, escaping, and prohibiting direct exec/eval.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM06",
+      "title": "Excessive Agency",
+      "category": "Agent Architecture",
+      "description": "Granting autonomous LLM agents excessive privileges, unrestricted tool access, or high-impact actions (file deletion, network writes, money transfer) without human-in-the-loop authorization.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm06-excessive-agency/",
+      "verification_guidance": "Examine tool permissions, read-only vs write scoping, human-in-the-loop confirmations for state-changing operations, and rate/action limiting.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM07",
+      "title": "System Prompt Leakage",
+      "category": "Confidentiality",
+      "description": "Extraction of internal system instructions, secret rules, API parameters, or behavioral constraints through adversarial prompting.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm07-system-prompt-leakage/",
+      "verification_guidance": "Ensure sensitive business logic, keys, or internal endpoints are not stored inside system prompt strings; implement prompt leakage detection filters.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM08",
+      "title": "Vector and Embedding Weaknesses",
+      "category": "RAG Architecture",
+      "description": "Vulnerabilities in RAG systems where attackers poison embeddings, manipulate similarity search, or bypass vector database access controls.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm08-vector-and-embedding-weaknesses/",
+      "verification_guidance": "Audit vector database multitenancy, document authorization metadata checking at retrieval time, query input sanitization, and embedding collision resilience.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM09",
+      "title": "Misinformation",
+      "category": "Reliability & Safety",
+      "description": "LLM generating factually incorrect, fabricated, or misleading outputs (hallucinations) presented as authoritative facts without verification.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm09-misinformation/",
+      "verification_guidance": "Check for citation anchoring, source verification, temperature settings, deterministic guardrails, and user disclaimer notifications.",
+      "is_conceptual_mapping": false
+    },
+    {
+      "control_id": "LLM10",
+      "title": "Unbounded Consumption",
+      "category": "Availability",
+      "description": "Denial of service or resource exhaustion caused by excessive token processing, looping agent calls, expensive embeddings, or large context windows without rate limits.",
+      "reference_url": "https://genai.owasp.org/llmrisk/llm10-unbounded-consumption/",
+      "verification_guidance": "Check max_tokens limits, per-user rate limiting, agent recursion limits (max_iterations), request timeouts, and token budget alerts.",
+      "is_conceptual_mapping": false
+    }
+  ]
+}
